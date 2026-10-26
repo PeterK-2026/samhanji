@@ -1,3 +1,4 @@
+import { regionDef } from "../data/regions";
 import { checkFactions, killOfficer } from "./politics";
 import {
   adjacent, chance, clamp, factionOfficers, isAllied, menIn, officersIn, rand, relation, spawnFreeOfficers,
@@ -43,6 +44,17 @@ export function monthStart(s: GameState): News[] {
 
     // 세율에 따른 민심 변화
     r.loyalty = clamp(r.loyalty + Math.round((45 - r.rate) / 10), 0, 100);
+
+    // 부흥운동 [설계]: 당이 다스리는 한반도 지역은 민심이 계속 떨어지고, 낮으면 부흥군이 일어난다
+    // (백제·고구려 부흥운동). 이것이 없으면 중원의 물량을 가진 당이 거의 모든 판을 통일한다.
+    if (owner === "tang" && regionDef(r.id).korea) {
+      r.loyalty = clamp(r.loyalty - 2, 0, 100);
+      if (r.loyalty < 30 && chance(0.06)) {
+        for (const o of officersIn(s, r.id)) o.men = Math.floor(o.men * 0.85);
+        r.food = Math.floor(r.food * 0.8);
+        news.push({ text: `${r.name}에서 부흥군이 일어나 당군을 공격했다!`, to: owner });
+      }
+    }
 
     // 세금 (1월, 7월)
     if (m === 1 || m === 7) {

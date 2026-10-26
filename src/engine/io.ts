@@ -75,4 +75,6 @@ export interface IO {
   showBattle(view: BattleView | null): void;
   pickHex(prompt: string, allowed: number[], labels?: Record<number, string>, cancelLabel?: string): Promise<number | null>;
   sleep(ms: number): Promise<void>;
+  // 기록창 뒤 장면: "title" | "menu" | "spring"… | "cmd0"~"cmd19" | "battle". 화면이 없으면 구현하지 않아도 된다
+  scene?(kind: string): void;
 }

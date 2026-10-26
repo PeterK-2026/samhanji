@@ -241,7 +241,7 @@ export class Battle {
   divisor(x: Unit, enemy: Unit, attacker: boolean): number {
     if (attacker && this.terrain(enemy.hex) === "castle") return SORTIE_DIV;
     const t = this.terrain(x.hex);
-    if (t === "castle") return TERRAIN_DIV.castle + Math.round((this.target.forts - 50) / 10); // 성곽 수치 보정 [설계]
+    if (t === "castle") return TERRAIN_DIV.castle + Math.round((this.target.forts - 50) / 5); // 성곽 수치 보정 [설계]: 90이면 +8
     return TERRAIN_DIV[t];
   }
 

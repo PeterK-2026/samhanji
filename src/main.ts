@@ -14,6 +14,7 @@ async function setup(): Promise<GameState | null> {
   if (quick) return quick;
   ui.setState(createGame(1, [], "history", 2, false), true); // 타이틀: 642년 세력도를 미리 보여 준다
   ui.clear();
+  ui.scene("title");
   ui.say("삼한지 三韓志 — 고구려·백제·신라, 그리고 당");
   ui.say("7세기, 한반도의 패권을 두고 네 나라가 맞선다.");
   const start = await ui.choose("무엇을 하시겠습니까?", [

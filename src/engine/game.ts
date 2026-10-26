@@ -21,6 +21,7 @@ export class Game {
         this.io.clear();
         this.io.refresh();
         this.io.say(`━━ ${s.year}년 ${s.month}월 (${seasonName(s.month)}) ━━`);
+        this.io.scene?.(["spring", "summer", "autumn", "winter"][Math.min(3, Math.floor((s.month - 1) / 3))]);
         const news = monthStart(s).filter((n) => !n.to || s.factions[n.to].player);
         for (const n of news) this.io.say(n.text);
         this.io.refresh();
@@ -108,12 +109,14 @@ export class Game {
     if (officersIn(s, rid).length === 0) return "done";
     for (;;) {
       this.io.refresh(rid);
+      this.io.scene?.("menu");
       const no = await this.io.choose(
         `${ruler}님, ${regionLabel(s, rid)}의 명령은? (0~19)`,
         COMMANDS.map((c) => ({ value: c.no, label: c.name })),
         { columns: 4 },
       );
       if (no === null) continue;
+      this.io.scene?.(`cmd${no}`);
       if (no === 0) return "done";
       this.io.clear();
       const res = await runCommand(ctx, no, (c) => this.other(c));

@@ -22,7 +22,7 @@ const FACTION_MULT: Record<FactionId, { men: number; horses: number }> = {
   goguryeo: { men: 1.3, horses: 1.6 },
   baekje: { men: 1.0, horses: 0.8 },
   silla: { men: 1.0, horses: 0.9 },
-  tang: { men: 1.4, horses: 1.4 },
+  tang: { men: 1.0, horses: 1.4 },
 };
 
 export function createGame(

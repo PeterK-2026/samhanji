@@ -1,3 +1,4 @@
+import { regionDef } from "../data/regions";
 import { war } from "./battle";
 import { MAX_FOOD } from "./economy";
 import type { IO } from "./io";
@@ -19,6 +20,10 @@ function isFrontier(s: GameState, rid: number, f: FactionId): boolean {
     return o !== f && !isAllied(s, f, o);
   });
 }
+
+// 중원(한반도 밖) 지역은 서쪽 돌궐·토번에 대비해 장수 2명을 남겨 둔다 [설계].
+// 이것이 없으면 당이 중원의 장수를 모두 요동으로 보내 순식간에 고구려를 무너뜨린다.
+const garrison = (rid: number) => (regionDef(rid).korea ? 0 : 2);
 
 // 아군 땅만 지나 가장 가까운 전방 지역으로 가는 첫 이웃 (없으면 null)
 function stepToFront(s: GameState, rid: number, f: FactionId): number | null {
@@ -87,7 +92,7 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
     const enough = strength * aggressive > t.d * need + 900 && r.food > men * 0.7;
     if (enough && chance(0.7)) {
       const sorted = [...offs].filter((o) => o.men > 0).sort((a, b) => b.war - a.war);
-      const keep = isFrontier(s, rid, f) && sorted.length > 1 ? 1 : 0;
+      const keep = Math.max(garrison(rid), isFrontier(s, rid, f) && sorted.length > 1 ? 1 : 0);
       const army = sorted.slice(0, Math.max(1, sorted.length - keep)).slice(0, 8);
       // 군주는 위험하면 남는다
       const ruler = s.factions[f].ruler;
@@ -140,7 +145,7 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
     const step = stepToFront(s, rid, f);
     const ruler = s.factions[f].ruler;
     const movable = offs.filter((o) => o.id !== ruler && o.men > 500);
-    if (step && movable.length > (offs.length > 1 ? 0 : 1) && chance(0.6)) {
+    if (step && offs.length > garrison(rid) && movable.length > (offs.length > 1 ? 0 : 1) && chance(0.6)) {
       const dest = step;
       const mover = movable.sort((a, b) => b.men - a.men)[0];
       if (offs.length > 1 || mover.id !== ruler) {

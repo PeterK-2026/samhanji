@@ -7,6 +7,7 @@ import { officerImg, regionImg } from "./assets";
 import { BattleMap } from "./battleMap";
 import { josa } from "./josa";
 import { MapView } from "./map";
+import { buildScene } from "./scenes";
 
 type Pending =
   | { kind: "choose"; options: Option[]; cancel: boolean; resolve: (v: number | null) => void }
@@ -53,6 +54,8 @@ export class UI implements IO {
   private cancelBtn: HTMLElement;
   private infoEl: HTMLElement;
   private dateEl: HTMLElement;
+  private stageEl: HTMLElement;
+  private sceneKind = "";
   private pending: Pending | null = null;
   private focus: number | undefined;
   private swallowUntil = 0;
@@ -74,6 +77,7 @@ export class UI implements IO {
     this.cancelBtn = $("#cancel");
     this.infoEl = $("#info");
     this.dateEl = $("#date");
+    this.stageEl = $("#stage");
     $("#ok").addEventListener("click", () => this.submitText());
     this.cancelBtn.addEventListener("click", () => this.cancel());
     // 키보드 입력은 문서 단위에서 직접 처리한다. 화면 키보드 등 처리하지 않은 입력만 기본 동작을 따른다.
@@ -208,7 +212,14 @@ export class UI implements IO {
     });
   }
 
+  scene(kind: string) {
+    if (kind === this.sceneKind) return;
+    this.sceneKind = kind;
+    this.stageEl.replaceChildren(buildScene(kind, this.state?.month ?? 1));
+  }
+
   showBattle(view: BattleView | null) {
+    if (view && !this.battle) this.scene("battle");
     this.battle = view;
     this.mapSvg.toggleAttribute("hidden", !!view);
     this.battleSvg.toggleAttribute("hidden", !view);
