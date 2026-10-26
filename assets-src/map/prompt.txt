@@ -1,0 +1,12 @@
+Use your image generation tool to create ONE image and save it as a PNG at exactly assets-src/map/strategic.png (relative to the current directory). Do not create, modify or delete any other files.
+
+The attached image assets-src/map/reference.png is an exact layout guide: beige = land, dark blue = sea. Use it as the reference/input for the generation so the result keeps the SAME coastline shapes and positions (same peninsula, same bays, same island at the bottom), square 1:1, 1024x1024.
+
+Paint it as a refined antique East Asian map for a historical strategy game set in 7th-century Korea and China:
+- land: aged hanji paper / silk tones (warm ochre, muted green), subtle relief shading
+- ink-wash mountain ranges: a long ridge down the east side of the peninsula, rugged mountains in the north, hills elsewhere
+- thin blue rivers flowing into the western sea, small forests
+- sea: deep indigo-teal with delicate traditional wave patterns, slightly lighter near the coasts
+- soft vignette and old-map texture; elegant and readable as a game background
+- absolutely no text, no labels, no borders, no grid, no compass letters, no watermark, no frame
+After saving, report the saved path and pixel size.

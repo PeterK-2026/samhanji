@@ -1,0 +1,770 @@
+[
+ {
+  "file": "assets-src/officers/seondeok.png",
+  "prompt": "Subject: 선덕여왕, a Silla woman, about 65 years old, a monarch in royal robes and crown. Historical note: 신라 제27대 왕. 첫 여왕. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. first queen regnant of Silla, wise and serene, golden crown with jade ornaments\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jindeok.png",
+  "prompt": "Subject: 진덕여왕, a Silla woman, about 55 years old, a monarch in royal robes and crown. Historical note: 신라 제28대 왕. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. queen of Silla, graceful, golden crown\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/chunchu.png",
+  "prompt": "Subject: 김춘추, a Silla man, about 52 years old, a monarch in royal robes and crown. Historical note: 훗날 태종 무열왕. 나당동맹을 성사시킨 외교가. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yusin.png",
+  "prompt": "Subject: 김유신, a Silla man, about 60 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 삼국통일의 명장. 금관가야 왕족 후손. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/inmun.png",
+  "prompt": "Subject: 김인문, a Silla man, about 26 years old, a scholar-official / strategist in court robes and official hat. Historical note: 무열왕의 아들. 당과의 외교를 맡음. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/heumsun.png",
+  "prompt": "Subject: 김흠순, a Silla man, about 56 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 김유신의 아우. 황산벌 전투 참전. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/pumil.png",
+  "prompt": "Subject: 김품일, a Silla man, about 50 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 관창의 아버지. 황산벌 전투 장군. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gwanchang.png",
+  "prompt": "Subject: 관창, a Silla man, about 17 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 화랑. 황산벌에서 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. a teenage hwarang youth, brave and earnest\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/alcheon.png",
+  "prompt": "Subject: 알천, a Silla man, about 70 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 상대등. 용맹한 대장군. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/bidam.png",
+  "prompt": "Subject: 비담, a Silla man, about 55 years old, a military officer in light armor. Historical note: 상대등. 647년 반란을 일으킴. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yeomjong.png",
+  "prompt": "Subject: 염종, a Silla man, about 55 years old, a military officer in light armor. Historical note: 비담의 난에 가담. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yongchun.png",
+  "prompt": "Subject: 김용춘, a Silla man, about 70 years old, a military officer in light armor. Historical note: 김춘추의 아버지. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/pumseok.png",
+  "prompt": "Subject: 김품석, a Silla man, about 45 years old, a military officer in light armor. Historical note: 대야성 도독. 김춘추의 사위. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jukjuk.png",
+  "prompt": "Subject: 죽죽, a Silla man, about 40 years old, a military officer in light armor. Historical note: 대야성에서 끝까지 싸운 사지. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/geomil.png",
+  "prompt": "Subject: 검일, a Silla man, about 45 years old, a military officer in light armor. Historical note: 대야성 함락 때 백제에 내응. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/beopmin.png",
+  "prompt": "Subject: 김법민, a Silla man, about 29 years old, a monarch in royal robes and crown. Historical note: 훗날 문무왕. 나당전쟁을 승리로 이끔. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/cheonjon.png",
+  "prompt": "Subject: 김천존, a Silla man, about 45 years old, a military officer in light armor. Historical note: 백제 정벌에 참여한 장군. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jukji.png",
+  "prompt": "Subject: 죽지, a Silla man, about 35 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 진덕·무열·문무왕 대의 장군. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/wonsul.png",
+  "prompt": "Subject: 김원술, a Silla man, about 18 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 김유신의 아들. 매소성 전투 참전. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/bangul.png",
+  "prompt": "Subject: 반굴, a Silla man, about 18 years old, a military officer in light armor. Historical note: 김흠순의 아들. 황산벌에서 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yangdo.png",
+  "prompt": "Subject: 김양도, a Silla man, about 45 years old, a military officer in light armor. Historical note: 장군이자 외교 사신. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gangsu.png",
+  "prompt": "Subject: 강수, a Silla man, about 35 years old, a scholar-official / strategist in court robes and official hat. Historical note: 외교 문서에 뛰어난 문장가. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. Confucian scholar-official holding a scroll\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/seolouyu.png",
+  "prompt": "Subject: 설오유, a Silla man, about 25 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 670년 고연무와 함께 압록강을 건넘. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/uija.png",
+  "prompt": "Subject: 의자왕, a Baekje man, about 56 years old, a monarch in royal robes and crown. Historical note: 백제 제31대 왕. '해동증자'. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/seongchung.png",
+  "prompt": "Subject: 성충, a Baekje man, about 50 years old, a scholar-official / strategist in court robes and official hat. Historical note: 좌평. 충언하다 옥사. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/heungsu.png",
+  "prompt": "Subject: 흥수, a Baekje man, about 55 years old, a scholar-official / strategist in court robes and official hat. Historical note: 좌평. 백강·탄현 방어를 진언. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gyebaek.png",
+  "prompt": "Subject: 계백, a Baekje man, about 45 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 달솔. 결사대 5천으로 황산벌에서 항전. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. grim resolve before his last battle\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yunchung.png",
+  "prompt": "Subject: 윤충, a Baekje man, about 55 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 642년 대야성을 함락. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yung.png",
+  "prompt": "Subject: 부여융, a Baekje man, about 40 years old, a military officer in light armor. Historical note: 의자왕의 태자. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/pung.png",
+  "prompt": "Subject: 부여풍, a Baekje man, about 35 years old, a monarch in royal robes and crown. Historical note: 왜에 있다가 부흥군의 왕으로 옹립됨. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/tae.png",
+  "prompt": "Subject: 부여태, a Baekje man, about 33 years old, a military officer in light armor. Historical note: 의자왕의 아들. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/boksin.png",
+  "prompt": "Subject: 복신, a Baekje man, about 45 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 백제 부흥운동 지도자. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/dochim.png",
+  "prompt": "Subject: 도침, a Baekje man, about 43 years old, a Buddhist monk with shaved head in grey-brown monastic robes. Historical note: 승려. 복신과 함께 부흥군을 이끔. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/heukchi.png",
+  "prompt": "Subject: 흑치상지, a Baekje man, about 25 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 임존성에서 부흥군을 이끈 장수. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/satasangyeo.png",
+  "prompt": "Subject: 사타상여, a Baekje man, about 30 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 흑치상지와 함께 부흥군에 참여. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yesikjin.png",
+  "prompt": "Subject: 예식진, a Baekje man, about 40 years old, a military officer in light armor. Historical note: 웅진에서 의자왕을 당에 넘겼다고 전함. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/eunsang.png",
+  "prompt": "Subject: 은상, a Baekje man, about 45 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 좌평. 황산벌 이후 신라군과 교전. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sangyeong.png",
+  "prompt": "Subject: 상영, a Baekje man, about 45 years old, a military officer in light armor. Historical note: 좌평. 황산벌에서 포로가 됨. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/chungsang.png",
+  "prompt": "Subject: 충상, a Baekje man, about 43 years old, a military officer in light armor. Historical note: 좌평. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jisusin.png",
+  "prompt": "Subject: 지수신, a Baekje man, about 35 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 임존성 최후의 장수. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yeongnyu.png",
+  "prompt": "Subject: 영류왕, a Goguryeo man, about 70 years old, a monarch in royal robes and crown. Historical note: 고구려 제27대 왕. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/bojang.png",
+  "prompt": "Subject: 보장왕, a Goguryeo man, about 45 years old, a monarch in royal robes and crown. Historical note: 고구려 마지막 왕. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gaesomun.png",
+  "prompt": "Subject: 연개소문, a Goguryeo man, about 52 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 대막리지. 642년 정변으로 실권 장악. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. fierce commanding presence, carrying five swords as legend says\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/manchun.png",
+  "prompt": "Subject: 양만춘, a Goguryeo man, about 55 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 안시성주. 당 태종의 대군을 막아냄. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. calm defender of Ansi fortress, determined eyes\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/namsaeng.png",
+  "prompt": "Subject: 연남생, a Goguryeo man, about 21 years old, a military officer in light armor. Historical note: 연개소문의 장남. 666년 당에 투항. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/namgeon.png",
+  "prompt": "Subject: 연남건, a Goguryeo man, about 19 years old, a military officer in light armor. Historical note: 연개소문의 차남. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/namsan.png",
+  "prompt": "Subject: 연남산, a Goguryeo man, about 18 years old, a military officer in light armor. Historical note: 연개소문의 삼남. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jeongto.png",
+  "prompt": "Subject: 연정토, a Goguryeo man, about 45 years old, a military officer in light armor. Historical note: 연개소문의 아우. 666년 신라에 투항. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yeonsu.png",
+  "prompt": "Subject: 고연수, a Goguryeo man, about 50 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 645년 안시성 구원군을 이끔. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/hyejin.png",
+  "prompt": "Subject: 고혜진, a Goguryeo man, about 50 years old, a military officer in light armor. Historical note: 고연수와 함께 구원군을 지휘. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/geommojam.png",
+  "prompt": "Subject: 검모잠, a Goguryeo man, about 35 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 고구려 부흥운동 지도자. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/anseung.png",
+  "prompt": "Subject: 안승, a Goguryeo man, about 18 years old, a monarch in royal robes and crown. Historical note: 보장왕의 외손. 부흥군의 왕으로 추대. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jeongui.png",
+  "prompt": "Subject: 고정의, a Goguryeo man, about 70 years old, a scholar-official / strategist in court robes and official hat. Historical note: 대로. 지구전을 진언. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sondaeeum.png",
+  "prompt": "Subject: 손대음, a Goguryeo man, about 55 years old, a military officer in light armor. Historical note: 백암성주. 645년 당에 항복. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/goyeonmu.png",
+  "prompt": "Subject: 고연무, a Goguryeo man, about 30 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 부흥군 장수. 670년 압록강 작전. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sinseong.png",
+  "prompt": "Subject: 신성, a Goguryeo man, about 35 years old, a Buddhist monk with shaved head in grey-brown monastic robes. Historical note: 승려. 668년 평양성 문을 열었다고 전함. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/taizong.png",
+  "prompt": "Subject: 태종 이세민, a Tang China man, about 57 years old, a monarch in royal robes and crown. Historical note: 당 제2대 황제. 645년 고구려 친정. 7th-century Tang dynasty (China) attire with purple and gold accents. emperor Taizong of Tang, imperial yellow robes and crown\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gaozong.png",
+  "prompt": "Subject: 고종 이치, a Tang China man, about 27 years old, a monarch in royal robes and crown. Historical note: 당 제3대 황제. 7th-century Tang dynasty (China) attire with purple and gold accents. emperor Gaozong of Tang, imperial robes and crown\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/lijing.png",
+  "prompt": "Subject: 이정, a Tang China man, about 70 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 당 초의 명장. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/lishiji.png",
+  "prompt": "Subject: 이세적, a Tang China man, about 61 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 645·668년 고구려 원정 사령관. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/zhangliang.png",
+  "prompt": "Subject: 장량, a Tang China man, about 65 years old, a military officer in light armor. Historical note: 645년 수군을 이끌고 비사성 공략. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/lidaozong.png",
+  "prompt": "Subject: 이도종, a Tang China man, about 55 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 안시성 앞 토산 공사를 지휘. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/zhangsun.png",
+  "prompt": "Subject: 장손무기, a Tang China man, about 61 years old, a scholar-official / strategist in court robes and official hat. Historical note: 태종의 처남이자 재상. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/fang.png",
+  "prompt": "Subject: 방현령, a Tang China man, about 70 years old, a scholar-official / strategist in court robes and official hat. Historical note: 재상. 고구려 원정을 반대. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/weizheng.png",
+  "prompt": "Subject: 위징, a Tang China man, about 70 years old, a scholar-official / strategist in court robes and official hat. Historical note: 직간으로 이름난 재상. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yuchi.png",
+  "prompt": "Subject: 울지경덕, a Tang China man, about 70 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 당 개국 맹장. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/cheng.png",
+  "prompt": "Subject: 정지절, a Tang China man, about 66 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 정교금. 당 개국 맹장. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sudingfang.png",
+  "prompt": "Subject: 소정방, a Tang China man, about 63 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 660년 백제 원정 사령관. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/xuerengui.png",
+  "prompt": "Subject: 설인귀, a Tang China man, about 41 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 안동도호. 백의의 용장. 7th-century Tang dynasty (China) attire with purple and gold accents. famous for fighting in white robes over armor\nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/liurengui.png",
+  "prompt": "Subject: 유인궤, a Tang China man, about 54 years old, a scholar-official / strategist in court robes and official hat. Historical note: 백강 전투에서 왜·백제 연합 수군 격파. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/liurenyuan.png",
+  "prompt": "Subject: 유인원, a Tang China man, about 45 years old, a military officer in light armor. Historical note: 사비성 주둔 당군 지휘관. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/qibi.png",
+  "prompt": "Subject: 계필하력, a Tiele steppe nobleman serving Tang, about 45 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 철륵 출신 당 장수. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/ashina.png",
+  "prompt": "Subject: 아사나사이, a Göktürk (Turkic) nobleman serving Tang, braided hair, steppe features, about 46 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 돌궐 출신 당 장수. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/ligeunhaeng.png",
+  "prompt": "Subject: 이근행, a Mohe (Malgal) chieftain serving Tang, fur-trimmed armor, about 35 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 말갈 출신. 매소성 전투의 당군 장수. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gaokan.png",
+  "prompt": "Subject: 고간, a Tang China man, about 40 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 나당전쟁기 당군 장수. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/wangwendu.png",
+  "prompt": "Subject: 왕문도, a Tang China man, about 55 years old, a military officer in light armor. Historical note: 웅진도독. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/panghyotae.png",
+  "prompt": "Subject: 방효태, a Tang China man, about 55 years old, a military officer in light armor. Historical note: 사수 전투에서 연개소문에게 전사. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/seolgyedu.png",
+  "prompt": "Subject: 설계두, a Silla-born man serving in the Tang army, about 55 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 신라 출신으로 당에 건너가 645년 전사. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/seohyeon.png",
+  "prompt": "Subject: 김서현, a Silla man, about 70 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 김유신의 아버지. 만노군 태수, 낭비성 전투. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/munwang.png",
+  "prompt": "Subject: 김문왕, a Silla man, about 25 years old, a military officer in light armor. Historical note: 무열왕의 아들. 당에 사신으로 감. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/intae.png",
+  "prompt": "Subject: 김인태, a Silla man, about 18 years old, a military officer in light armor. Historical note: 무열왕의 아들. 사비성 전투에 참전. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gaewon.png",
+  "prompt": "Subject: 김개원, a Silla man, about 18 years old, a military officer in light armor. Historical note: 무열왕의 아들. 문무왕 대의 대신. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/samgwang.png",
+  "prompt": "Subject: 김삼광, a Silla man, about 18 years old, a military officer in light armor. Historical note: 김유신의 맏아들. 당에 숙위. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/munyeong.png",
+  "prompt": "Subject: 김문영, a Silla man, about 40 years old, a military officer in light armor. Historical note: 황산벌 전투의 장군. 소정방과 갈등. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jinju.png",
+  "prompt": "Subject: 김진주, a Silla man, about 45 years old, a military officer in light armor. Historical note: 병부령. 직무를 소홀히 해 처형됨. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/heumun.png",
+  "prompt": "Subject: 김흠운, a Silla man, about 27 years old, a military officer in light armor. Historical note: 화랑 출신. 양산 아래에서 백제군과 싸우다 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/biryeongja.png",
+  "prompt": "Subject: 비령자, a Silla man, about 55 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 무산성 전투에서 아들 거진과 함께 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/geojin.png",
+  "prompt": "Subject: 거진, a Silla man, about 17 years old, a military officer in light armor. Historical note: 비령자의 아들. 아버지를 따라 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/hapjeol.png",
+  "prompt": "Subject: 합절, a Silla man, about 45 years old, a military officer in light armor. Historical note: 비령자의 종. 주인을 따라 싸우다 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/pilbu.png",
+  "prompt": "Subject: 필부, a Silla man, about 40 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 칠중성을 지키다 고구려군에게 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sona.png",
+  "prompt": "Subject: 소나, a Silla man, about 30 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 아달성을 지키다 말갈군과 싸워 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/chwido.png",
+  "prompt": "Subject: 취도, a Silla man, about 18 years old, a military officer in light armor. Historical note: 승려였다가 종군. 백제 부흥군과 싸우다 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/bugwa.png",
+  "prompt": "Subject: 부과, a Silla man, about 30 years old, a military officer in light armor. Historical note: 취도의 형. 양산 아래에서 백제군과 싸우다 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/pipsil.png",
+  "prompt": "Subject: 핍실, a Silla man, about 18 years old, a military officer in light armor. Historical note: 취도의 아우. 보덕성 반란 진압 중 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yeongyun.png",
+  "prompt": "Subject: 김영윤, a Silla man, about 18 years old, a military officer in light armor. Historical note: 김흠춘의 손자. 보덕성 반란 진압 중 전사. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/heumdol.png",
+  "prompt": "Subject: 김흠돌, a Silla man, about 18 years old, a military officer in light armor. Historical note: 신문왕의 장인. 반란을 일으켜 처형됨. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/muhun.png",
+  "prompt": "Subject: 문훈, a Silla man, about 30 years old, a military officer in light armor. Historical note: 나당전쟁기 장군. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jinchun.png",
+  "prompt": "Subject: 진춘, a Silla man, about 40 years old, a military officer in light armor. Historical note: 백제 정벌과 고구려 원정에 참여한 장군. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sideuk.png",
+  "prompt": "Subject: 시득, a Silla man, about 25 years old, a military officer in light armor. Historical note: 사찬. 676년 기벌포에서 당 수군을 격파. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jangchun.png",
+  "prompt": "Subject: 장춘랑, a Silla man, about 17 years old, a military officer in light armor. Historical note: 화랑. 황산벌에서 전사했다고 『삼국유사』에 전함. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/parang.png",
+  "prompt": "Subject: 파랑, a Silla man, about 17 years old, a military officer in light armor. Historical note: 화랑. 장춘랑과 함께 전사했다고 전함. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/deugo.png",
+  "prompt": "Subject: 득오, a Silla man, about 18 years old, a scholar-official / strategist in court robes and official hat. Historical note: 화랑 죽지랑의 낭도. 「모죽지랑가」를 지음. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/wonhyo.png",
+  "prompt": "Subject: 원효, a Silla man, about 38 years old, a Buddhist monk with shaved head in grey-brown monastic robes. Historical note: 고승. 화엄·정토 사상을 대중에 펼침. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/uisang.png",
+  "prompt": "Subject: 의상, a Silla man, about 30 years old, a Buddhist monk with shaved head in grey-brown monastic robes. Historical note: 고승. 당에서 화엄을 배우고 부석사를 세움. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jajang.png",
+  "prompt": "Subject: 자장, a Silla man, about 65 years old, a Buddhist monk with shaved head in grey-brown monastic robes. Historical note: 고승. 황룡사 9층 목탑 건립을 건의. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/seolchong.png",
+  "prompt": "Subject: 설총, a Silla man, about 18 years old, a scholar-official / strategist in court robes and official hat. Historical note: 원효의 아들. 이두를 정리한 학자. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_sil_1.png",
+  "prompt": "Subject: 김천관, a Silla man, about 40 years old, a military officer in light armor. Historical note: 한산주 군관. 북방 수비를 맡음. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_sil_2.png",
+  "prompt": "Subject: 박술희, a Silla man, about 35 years old, a military officer in light armor. Historical note: 서당 소속 장수. 기병을 잘 다룸. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_sil_3.png",
+  "prompt": "Subject: 석우로, a Silla man, about 30 years old, a military officer in light armor. Historical note: 집사부의 관리. 군량 수송에 밝음. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_sil_4.png",
+  "prompt": "Subject: 설계원, a Silla man, about 25 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 화랑 출신의 맹장. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_sil_5.png",
+  "prompt": "Subject: 김윤중, a Silla man, about 37 years old, a military officer in light armor. Historical note: 병부의 참모. 지략이 뛰어남. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_sil_6.png",
+  "prompt": "Subject: 최승로, a Silla man, about 20 years old, a scholar-official / strategist in court robes and official hat. Historical note: 육두품 문관. 외교 문서를 맡음. 7th-century Silla (Korea) attire with gold ornaments and red-and-gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/uijik.png",
+  "prompt": "Subject: 의직, a Baekje man, about 55 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 좌평. 대야성 공략과 신라 공격을 지휘. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/imja.png",
+  "prompt": "Subject: 임자, a Baekje man, about 55 years old, a military officer in light armor. Historical note: 좌평. 김유신과 몰래 내통했다고 전함. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sataek.png",
+  "prompt": "Subject: 사택지적, a Baekje man, about 65 years old, a scholar-official / strategist in court robes and official hat. Historical note: 대좌평. 사택지적비를 남김. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/cheonbok.png",
+  "prompt": "Subject: 사택천복, a Baekje man, about 45 years old, a military officer in light armor. Historical note: 좌평. 660년 당군에 항복. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gukbyeon.png",
+  "prompt": "Subject: 국변성, a Baekje man, about 50 years old, a military officer in light armor. Historical note: 좌평. 사비 함락 때 당으로 끌려감. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yegun.png",
+  "prompt": "Subject: 예군, a Baekje man, about 42 years old, a military officer in light armor. Historical note: 예식진의 형. 당에 투항해 사신으로 활동. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gyogi.png",
+  "prompt": "Subject: 부여교기, a Baekje man, about 35 years old, a military officer in light armor. Historical note: 의자왕의 조카(또는 아들). 왜로 건너감. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/hyo.png",
+  "prompt": "Subject: 부여효, a Baekje man, about 35 years old, a military officer in light armor. Historical note: 의자왕의 아들. 웅진에서 항복. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/munsa.png",
+  "prompt": "Subject: 부여문사, a Baekje man, about 18 years old, a military officer in light armor. Historical note: 의자왕의 손자. 사비성에서 항복. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/chungseung.png",
+  "prompt": "Subject: 부여충승, a Baekje man, about 25 years old, a military officer in light armor. Historical note: 왕족. 백강 전투 후 항복. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/yeojajin.png",
+  "prompt": "Subject: 여자진, a Baekje man, about 35 years old, a military officer in light armor. Historical note: 부흥군 장수. 패전 후 왜로 망명. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jeongmu.png",
+  "prompt": "Subject: 정무, a Baekje man, about 30 years old, a military officer in light armor. Historical note: 부흥군 장수. 두시원악에서 신라군과 싸움. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/boduk.png",
+  "prompt": "Subject: 보덕, a Baekje man, about 55 years old, a Buddhist monk with shaved head in grey-brown monastic robes. Historical note: 고구려 고승. 650년 완산주로 옮겨 옴. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_bae_1.png",
+  "prompt": "Subject: 해수, a Baekje man, about 40 years old, a military officer in light armor. Historical note: 해씨 가문의 달솔. 웅진 방면 장수. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_bae_2.png",
+  "prompt": "Subject: 연문진, a Baekje man, about 35 years old, a military officer in light armor. Historical note: 연씨 가문의 은솔. 사비의 참모. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_bae_3.png",
+  "prompt": "Subject: 목간나, a Baekje man, about 45 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 목씨 가문의 덕솔. 동방성 수비. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_bae_4.png",
+  "prompt": "Subject: 진무, a Baekje man, about 30 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 진씨 가문의 맹장. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_bae_5.png",
+  "prompt": "Subject: 백가, a Baekje man, about 37 years old, a military officer in light armor. Historical note: 백씨 가문의 한솔. 수군을 맡음. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_bae_6.png",
+  "prompt": "Subject: 협반, a Baekje man, about 25 years old, a scholar-official / strategist in court robes and official hat. Historical note: 협씨 가문의 문관. 왜와의 교섭을 맡음. 7th-century Baekje (Korea) attire with indigo-blue and silver accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/noeeumsin.png",
+  "prompt": "Subject: 뇌음신, a Goguryeo man, about 40 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 661년 말갈과 함께 북한산성을 공격. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/saenghae.png",
+  "prompt": "Subject: 생해, a Mohe (Malgal) warrior chieftain allied with Goguryeo, fur-trimmed armor, about 35 years old, a military officer in light armor. Historical note: 말갈 장수. 뇌음신과 함께 북한산성을 공격. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/heonseong.png",
+  "prompt": "Subject: 연헌성, a Goguryeo nobleman, son of Yeon Namsaeng, about 18 years old, a military officer in light armor. Historical note: 연남생의 아들. 아버지와 함께 당에 투항. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/dasik.png",
+  "prompt": "Subject: 다식, a Goguryeo man, about 20 years old, a military officer in light armor. Historical note: 부흥군의 사신. 안승의 뜻을 신라에 전함. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/gojeongmun.png",
+  "prompt": "Subject: 고정문, a Goguryeo man, about 55 years old, a military officer in light armor. Historical note: 보장왕 대의 대신. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_gog_1.png",
+  "prompt": "Subject: 명림답부, a Goguryeo man, about 45 years old, a military officer in light armor. Historical note: 명림씨 가문의 대형. 국내성 수비. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_gog_2.png",
+  "prompt": "Subject: 을지수, a Goguryeo man, about 40 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 을지문덕의 후손이라 전하는 장수. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_gog_3.png",
+  "prompt": "Subject: 고추가, a Goguryeo man, about 50 years old, a military officer in light armor. Historical note: 왕족 고추가 출신. 요동 방면 장수. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_gog_4.png",
+  "prompt": "Subject: 우소, a Goguryeo man, about 35 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 신성의 맹장. 기병을 이끔. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_gog_5.png",
+  "prompt": "Subject: 연비, a Goguryeo man, about 30 years old, a military officer in light armor. Historical note: 연씨 일족의 소형. 책성 방면. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_gog_6.png",
+  "prompt": "Subject: 재증걸루, a Goguryeo man, about 43 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 재증씨 장수. 남부 국경 수비. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_gog_7.png",
+  "prompt": "Subject: 해명, a Goguryeo man, about 25 years old, a scholar-official / strategist in court robes and official hat. Historical note: 태학 출신 문관. 외교에 밝음. 7th-century Goguryeo (Korea) attire with crimson and black, bird-feather cap ornaments (jougwan) where fitting. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/niujinda.png",
+  "prompt": "Subject: 우진달, a Tang China man, about 60 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 645년 수군·육군을 이끈 장군. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/chengmingzhen.png",
+  "prompt": "Subject: 정명진, a Tang China man, about 55 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 고구려 원정에 여러 차례 참전. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/xiaosiye.png",
+  "prompt": "Subject: 소사업, a Tang China man, about 45 years old, a military officer in light armor. Historical note: 661년 부여도 행군총관. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/renyaxiang.png",
+  "prompt": "Subject: 임아상, a Tang China man, about 55 years old, a military officer in light armor. Historical note: 661년 패강도 행군총관. 진중에서 사망. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/sunrenshi.png",
+  "prompt": "Subject: 손인사, a Tang China man, about 45 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 663년 원군을 이끌고 백강 전투에 참전. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/dushuang.png",
+  "prompt": "Subject: 두상, a Tang China man, about 40 years old, a military officer in light armor. Historical note: 백강 전투의 수군 장수. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/xuewanche.png",
+  "prompt": "Subject: 설만철, a Tang China man, about 65 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 648년 압록강 방면 공격. 용맹한 장수. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/zhangjian.png",
+  "prompt": "Subject: 장검, a Tang China man, about 65 years old, a military officer in light armor. Historical note: 영주도독. 645년 선봉. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/jiangxingben.png",
+  "prompt": "Subject: 강행본, a Tang China man, about 60 years old, a military officer in light armor. Historical note: 공성 기구 제작에 능함. 개모성에서 전사. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/haochujun.png",
+  "prompt": "Subject: 학처준, a Tang China man, about 48 years old, a military officer in light armor. Historical note: 668년 이세적의 부장. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/peixingjian.png",
+  "prompt": "Subject: 배행검, a Tang China man, about 36 years old, a scholar-official / strategist in court robes and official hat. Historical note: 명장이자 명재상. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/liuboying.png",
+  "prompt": "Subject: 유백영, a Tang China man, about 45 years old, a military officer in light armor. Historical note: 660년 백제 원정 장수. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/liyifu.png",
+  "prompt": "Subject: 이의부, a Tang China man, about 41 years old, a scholar-official / strategist in court robes and official hat. Historical note: 고종 대의 권신. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_tang_1.png",
+  "prompt": "Subject: 왕충사, a Tang China man, about 40 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 유주의 절충도위. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_tang_2.png",
+  "prompt": "Subject: 최원, a Tang China man, about 45 years old, a military officer in light armor. Historical note: 영주도독부의 장사(長史). 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_tang_3.png",
+  "prompt": "Subject: 곽태, a Tang China man, about 35 years old, a battle-hardened general in lamellar armor and helmet. Historical note: 돌궐 원정에서 공을 세운 맹장. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/officers/f_tang_4.png",
+  "prompt": "Subject: 노자문, a Tang China man, about 37 years old, a military officer in light armor. Historical note: 등주 수군의 참모. 7th-century Tang dynasty (China) attire with purple and gold accents. \nStyle (must stay consistent across the whole series): square 1:1 bust portrait, head and shoulders, 3/4 view, painted semi-realistic gouache illustration like a classic 1990s historical strategy-game character portrait, warm muted palette, soft rim light, plain dark ink-wash background, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/1.png",
+  "prompt": "Subject: 부여성 — Buyeo fortress of Goguryeo on the northern Manchurian plains, earthen and stone walls, grasslands, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/2.png",
+  "prompt": "Subject: 신성 — Sinseong 'New Fortress' of Goguryeo, stone mountain fortress guarding the Liao river frontier, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/3.png",
+  "prompt": "Subject: 요동성 — Yodong (Liaodong) fortress of Goguryeo, great stone-walled city on the Liao plain with watchtowers, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/4.png",
+  "prompt": "Subject: 안시성 — Ansi fortress of Goguryeo, mountain fortress on a ridge with zig-zag stone walls, Tang siege mound nearby, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/5.png",
+  "prompt": "Subject: 비사성 — Bisa fortress of Goguryeo on a seaside cliff at the tip of the Liaodong peninsula, sea below, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/6.png",
+  "prompt": "Subject: 오골성 — Ogol fortress of Goguryeo, rugged stone mountain fortress among forested peaks, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/7.png",
+  "prompt": "Subject: 국내성 — Gungnae city, old Goguryeo capital by the Yalu river, square stone walls, stepped stone tombs nearby, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/8.png",
+  "prompt": "Subject: 책성 — Chaekseong fortress of Goguryeo in the northeastern frontier, wooden palisade and stone walls, pine forests, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/9.png",
+  "prompt": "Subject: 평양성 — Pyongyang city, capital of Goguryeo, vast walled city along the Taedong river with inner and outer walls, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/10.png",
+  "prompt": "Subject: 수곡성 — Sugok fortress of Goguryeo, hill fortress overlooking valleys, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/11.png",
+  "prompt": "Subject: 비열홀 — Biyeolhol, coastal fortress town on the east sea of Korea, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/12.png",
+  "prompt": "Subject: 한산주 — Hansanju, Silla provincial seat by the Han river, earthen fortress on a hill above the river, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/13.png",
+  "prompt": "Subject: 당항성 — Danghang fortress, Silla port fortress on the west sea coast with ships to Tang, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/14.png",
+  "prompt": "Subject: 우수주 — Usuju, Silla mountain town in Gangwon highlands by a river, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/15.png",
+  "prompt": "Subject: 하슬라 — Haseulla (Gangneung), Silla coastal town between mountains and the east sea, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/16.png",
+  "prompt": "Subject: 국원 — Gugwon (Chungju), Silla secondary capital by the Namhan river, central stone pagoda, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/17.png",
+  "prompt": "Subject: 상주 — Sangju, Silla provincial seat among rice plains and mountains, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/18.png",
+  "prompt": "Subject: 금성 — Geumseong (Gyeongju), royal capital of Silla: palace halls, wooden pagoda of Hwangnyongsa, walls and gates, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/19.png",
+  "prompt": "Subject: 대야성 — Daeya fortress (Hapcheon), Silla frontier stone fortress on a mountain against Baekje, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/20.png",
+  "prompt": "Subject: 금관 — Geumgwan (Gimhae), former Gaya capital, port town by the river mouth, iron workshops, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/21.png",
+  "prompt": "Subject: 임존성 — Imjon fortress, Baekje stone mountain fortress among hills, later center of the restoration army, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/22.png",
+  "prompt": "Subject: 웅진 — Ungjin (Gongju), Baekje secondary capital, Gongsanseong fortress above the Geum river, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/23.png",
+  "prompt": "Subject: 사비 — Sabi (Buyeo), royal capital of Baekje on the Geum river, Busosan fortress, elegant palaces and a stone pagoda, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/24.png",
+  "prompt": "Subject: 익산 — Iksan, Baekje royal city with the great Mireuksa temple and its stone pagoda, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/25.png",
+  "prompt": "Subject: 남원 — Namwon, Baekje town in a mountain basin with walls, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/26.png",
+  "prompt": "Subject: 무진주 — Mujinju (Gwangju), Baekje southern provincial town in fertile plains below Mudeungsan, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/27.png",
+  "prompt": "Subject: 영주 — Yingzhou, Tang frontier garrison city in the northeast steppe edge, Tang-style walls and gate towers, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/28.png",
+  "prompt": "Subject: 유주 — Youzhou (near Beijing), Tang military hub, massive rammed-earth walls and army camps, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/29.png",
+  "prompt": "Subject: 등주 — Dengzhou, Tang port city on the Shandong coast, war fleet harbor, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/30.png",
+  "prompt": "Subject: 기주 — Jizhou, Tang prefectural city on the Hebei plain, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/31.png",
+  "prompt": "Subject: 낙양 — Luoyang, eastern capital of Tang, grand palace and city gates by the Luo river, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ },
+ {
+  "file": "assets-src/regions/32.png",
+  "prompt": "Subject: 장안 — Chang'an, capital of Tang, enormous gridded city with the Daming palace and great walls, 7th century.\nStyle (must stay consistent across the whole series): landscape 3:2 painted semi-realistic gouache illustration like a classic historical strategy-game city screen, elevated three-quarter bird's-eye view, warm muted palette, no people in close-up, no text, no frame, no watermark."
+ }
+]

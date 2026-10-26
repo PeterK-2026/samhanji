@@ -1,0 +1,15 @@
+Use your image generation tool to create the images below, one image per item, each from its own prompt, and save each as a PNG at exactly the given path (relative to the current directory). Do not create, modify or delete any other files. When done, list the saved paths with pixel sizes.
+
+Shared style for ALL items: square 1:1 with a genuinely TRANSPARENT background (PNG alpha). A compact formation of about 9 tiny 7th-century soldiers (spearmen and a mounted officer) seen from a high three-quarter top-down view, gathered tightly around one tall war banner on a pole, like a polished unit token in a classic 2D historical strategy game. Painterly with crisp detail, soft drop shadow under the group, centered, filling about 80% of the image. No text, no letters on the banner, no ground, no frame, no watermark.
+
+### Item 1: assets-src/battle/troop-goguryeo.png
+Goguryeo army: crimson red banner and red-black lamellar armor, feathered helmets.
+
+### Item 2: assets-src/battle/troop-baekje.png
+Baekje army: deep blue banner and blue-silver lamellar armor.
+
+### Item 3: assets-src/battle/troop-silla.png
+Silla army: golden yellow banner and gold-brown lamellar armor.
+
+### Item 4: assets-src/battle/troop-tang.png
+Tang China army: purple banner and purple-steel Tang armor.

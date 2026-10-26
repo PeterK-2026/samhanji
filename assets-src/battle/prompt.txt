@@ -1,0 +1,24 @@
+Use your image generation tool to create the images below, one image per item, each from its own prompt, and save each as a PNG at exactly the given path (relative to the current directory). Do not create, modify or delete any other files. When done, list the saved paths with pixel sizes.
+
+Shared style for ALL items: top-down battlefield terrain for a classic 1990s historical strategy game (in the spirit of 16-bit era war maps), painterly with subtle pixel-art crispness, warm muted palette, lit from the top-left, no text, no grid lines, no borders, no watermark.
+
+### Item 1: assets-src/battle/plain.png
+Square 1:1. Seamless tileable top-down texture of dry flat plains: packed earth and short dry grass, small pebbles. Must tile seamlessly on all edges.
+
+### Item 2: assets-src/battle/grass.png
+Square 1:1. Seamless tileable top-down texture of lush green grassland meadow with small flower specks. Must tile seamlessly on all edges.
+
+### Item 3: assets-src/battle/forest.png
+Square 1:1. Seamless tileable top-down texture of dense pine and broadleaf forest canopy seen from above, many small round tree crowns with shadows. Must tile seamlessly on all edges.
+
+### Item 4: assets-src/battle/mountain.png
+Square 1:1. Seamless tileable top-down texture of rugged rocky mountains: many small grey-brown peaks with snowy tips and shadows, like a classic strategy-game mountain tile pattern. Must tile seamlessly on all edges.
+
+### Item 5: assets-src/battle/water.png
+Square 1:1. Seamless tileable top-down texture of a river / lake surface: blue water with gentle ripples and light glints. Must tile seamlessly on all edges.
+
+### Item 6: assets-src/battle/hill.png
+Square 1:1. Seamless tileable top-down texture of rolling low hills: grassy mounds with soft ochre slopes and shadows. Must tile seamlessly on all edges.
+
+### Item 7: assets-src/battle/castle.png
+Square 1:1 with a genuinely TRANSPARENT background (PNG alpha). A single small 7th-century Korean hill fortress seen from a high three-quarter top-down view: square stone walls with crenellations, a gate tower with a dark tiled roof, a few buildings inside, centered and filling about 85% of the image, no ground around it.

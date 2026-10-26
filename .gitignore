@@ -1,0 +1,12 @@
+node_modules
+dist
+assets-src/officers
+assets-src/regions
+assets-src/logs
+assets-src/map/strategic.png
+assets-src/battle/*.png
+assets-src/battlefields/*.png
+!assets-src/battlefields/ref-*.png
+reports/eval-latest.json
+.playwright-mcp
+.github/workflows/pages.yml

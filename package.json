@@ -1,0 +1,25 @@
+{
+  "name": "samhanji",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "sim": "esbuild scripts/sim.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/sim.mjs --log-level=warning && node node_modules/.cache/sim.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "eval": "esbuild scripts/eval.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/eval.mjs --log-level=warning && node node_modules/.cache/eval.mjs",
+    "images:manifest": "python scripts/image-manifest.py",
+    "images:gen": "python scripts/gen-images.py",
+    "images:optimize": "python scripts/optimize-images.py",
+    "deploy": "bash scripts/deploy.sh"
+  },
+  "devDependencies": {
+    "typescript": "5.6.3",
+    "vite": "5.4.10",
+    "vitest": "^2.1.9"
+  }
+}
