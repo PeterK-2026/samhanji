@@ -212,14 +212,16 @@ export class UI implements IO {
     });
   }
 
-  scene(kind: string) {
-    if (kind === this.sceneKind) return;
-    this.sceneKind = kind;
-    this.stageEl.replaceChildren(buildScene(kind, this.state?.month ?? 1));
+  // 기록창 아래 해설 카드. 같은 장면·지역·달이면 다시 그리지 않는다
+  scene(kind: string, battle: BattleView | null = null) {
+    const key = `${kind}|${this.focus ?? ""}|${this.state?.year}.${this.state?.month}`;
+    if (key === this.sceneKind && !battle) return;
+    this.sceneKind = key;
+    this.stageEl.replaceChildren(buildScene(kind, { s: this.state, rid: this.focus, battle }));
   }
 
   showBattle(view: BattleView | null) {
-    if (view && !this.battle) this.scene("battle");
+    if (view && !this.battle) this.scene("battle", view);
     this.battle = view;
     this.mapSvg.toggleAttribute("hidden", !!view);
     this.battleSvg.toggleAttribute("hidden", !view);
