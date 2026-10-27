@@ -8,7 +8,7 @@ import {
   COLS, DIR_ARROW, DIR_NAME, FIRE_BASE, MOVE_COST, ROWS, SORTIE_DIV, TERRAIN_DIV, TERRAIN_NAME, colOf, dist, entryHexes,
   makeField, neighbors, reachable, rowOf, step, type Edge, type Field,
 } from "./hex";
-import type { BattleView, IO, Option, SideView } from "./io";
+import type { BattleFx, BattleView, IO, Option, SideView } from "./io";
 import { MAX_FOOD, MAX_GOLD } from "./economy";
 import { checkFactions, killOfficer } from "./politics";
 import {
@@ -260,6 +260,7 @@ export class Battle {
     if (!isUp(u)) return;
     u.o.men = Math.max(0, u.o.men - Math.round(dmg));
     if (u.o.men > 0) return;
+    void this.fx({ kind: "rout", from: u.hex, to: u.hex }, false);
     const side = this.sideOf(u);
     if (u.o.id !== "__militia" && by && chance(0.7)) {
       by.captives.push(u.o);
@@ -280,7 +281,15 @@ export class Battle {
 
   // ── 행동 ──
   // 원작 34aa:01b8 — 한 번의 교전. 양측이 동시에 손실을 입는다.
-  clash(a: Unit, t: Unit, count = 1) {
+  // 보고 있는 전투에서만 연출한다. wait=false면 기다리지 않는다 (불길·궤멸처럼 덧붙는 효과)
+  async fx(f: BattleFx, wait = true) {
+    if (!this.watch || !this.io.battleFx) return;
+    this.render();
+    const p = this.io.battleFx(f);
+    if (wait) await p;
+  }
+
+  async clash(a: Unit, t: Unit, count = 1, kind: "attack" | "charge" = "attack", first = true) {
     // 난이도: AI가 플레이어 부대를 공격하면 AI의 손실이 준다 (원작 0x33b3)
     const bonus = this.sideOf(t).player && !this.sideOf(a).player ? this.s.difficulty - 1 : 0;
     let lossA = this.loss(a, t, true, count + bonus);
@@ -289,6 +298,7 @@ export class Battle {
     lossA = Math.min(a.o.men, lossA);
     lossT = Math.min(t.o.men, lossT);
     this.log(`${a.o.name}이(가) ${t.o.name}을(를) 공격! 적 ${lossT}명, 아군 ${lossA}명 손실.`);
+    await this.fx({ kind, from: a.hex, to: t.hex, dmgTo: lossT, dmgFrom: lossA, first });
     this.hit(t, lossT, this.sideOf(a));
     this.hit(a, lossA, this.sideOf(t));
   }
@@ -304,7 +314,7 @@ export class Battle {
   // 1. 일반 공격
   async attack(a: Unit, t: Unit) {
     if (await this.duelEvent(a, t)) return;
-    this.clash(a, t);
+    await this.clash(a, t);
   }
 
   // 2. 동시 공격: 대상에 붙은 아군 부대가 모두 함께 친다. 공격 수만큼 각자의 손실이 준다 (원작 35fd:00a2)
@@ -312,13 +322,13 @@ export class Battle {
     return this.up(side).filter((x) => dist(x.hex, t.hex) === 1);
   }
 
-  simultaneous(a: Unit, t: Unit) {
+  async simultaneous(a: Unit, t: Unit) {
     const group = [a, ...this.allies(t, this.sideOf(a)).filter((x) => x !== a)];
     this.log(`${group.map((x) => x.o.name).join("·")}의 동시 공격!`);
     for (const x of group) {
       if (!isUp(t) || this.result) break;
       if (!isUp(x)) continue;
-      this.clash(x, t, group.length);
+      await this.clash(x, t, group.length);
       x.done = true;
     }
   }
@@ -329,7 +339,7 @@ export class Battle {
     const n = rand(1, 10);
     const target = t.hex;
     this.log(`${a.o.name}의 돌격! (${n}회)`);
-    for (let i = 0; i < n && isUp(a) && isUp(t) && !this.result; i++) this.clash(a, t);
+    for (let i = 0; i < n && isUp(a) && isUp(t) && !this.result; i++) await this.clash(a, t, 1, "charge", i === 0);
     if (isUp(a) && !isUp(t) && !this.result && !this.unitAt(target) && !this.fires.has(target)) {
       a.hex = target;
       this.log(`${a.o.name}이(가) 적진으로 밀고 들어갔다.`);
@@ -364,6 +374,7 @@ export class Battle {
       return;
     }
     this.log(`"${b.o.name}, 기꺼이 상대해 주마!" — 일기토`);
+    await this.fx({ kind: "duel", from: a.hex, to: b.hex });
     const d = Math.floor(Math.abs(a.o.war - b.o.war) / 5);
     const ra = a.o.war >= b.o.war ? 20 : Math.max(2, 20 - d);
     const rb = b.o.war >= a.o.war ? 20 : Math.max(2, 20 - d);
@@ -421,14 +432,16 @@ export class Battle {
     return Math.min(100, Math.floor(((101 - e.o.int) * base) / 100) + Math.floor(rand(0, Math.max(0, a.o.int - e.o.int)) / 2));
   }
 
-  fire(a: Unit, h: number) {
+  async fire(a: Unit, h: number) {
     const t = this.terrain(h);
     if (this.rainy()) {
       this.log(`${this.weather}이(가) 내려 불을 놓을 수 없다.`);
       return;
     }
     const target = this.unitAt(h);
-    if (rand(0, 99) < this.fireChance(a, h)) {
+    const ok = rand(0, 99) < this.fireChance(a, h);
+    await this.fx({ kind: "fire", from: a.hex, to: h, ok });
+    if (ok) {
       this.fires.set(h, 2 + (t === "forest" || t === "grass" ? 1 : 0));
       this.log(`${a.o.name}의 화계! ${TERRAIN_NAME[t]}에 불이 붙었다!`);
       if (target) this.burn(target);
@@ -437,16 +450,20 @@ export class Battle {
 
   burn(u: Unit) {
     const before = u.o.men;
-    this.hit(u, u.o.men * (0.15 + Math.random() * 0.1), this.other(this.sideOf(u)));
+    const dmg = Math.round(u.o.men * (0.15 + Math.random() * 0.1));
+    void this.fx({ kind: "burn", from: u.hex, to: u.hex, dmgTo: dmg }, false);
+    this.hit(u, dmg, this.other(this.sideOf(u)));
     this.log(`불길이 ${u.o.name}의 부대를 덮쳤다! ${before - u.o.men}명 손실.`);
   }
 
   // 이간: 금 100으로 적 장수를 매수해 아군으로 돌린다 (원작 Gold 사용 추정)
-  plot(a: Unit, t: Unit) {
+  async plot(a: Unit, t: Unit) {
     const side = this.sideOf(a);
     side.gold -= 100;
     const p = clamp((100 - t.o.loy) / 120 + (a.o.int - t.o.int) / 200 + 0.03, 0.03, 0.7);
-    if (chance(p)) {
+    const ok = chance(p);
+    await this.fx({ kind: "plot", from: a.hex, to: t.hex, ok });
+    if (ok) {
       const foe = this.sideOf(t);
       foe.units = foe.units.filter((u) => u !== t);
       t.side = side.key;
@@ -751,8 +768,8 @@ export class Battle {
         } else t = await this.pickUnit(pool, "누구를 공격합니까?");
         if (!t) continue;
         if (kind === 1) await this.attack(u, t);
-        else if (kind === 2) this.simultaneous(u, t);
-        else if (kind === 3) this.fire(u, t.hex);
+        else if (kind === 2) await this.simultaneous(u, t);
+        else if (kind === 3) await this.fire(u, t.hex);
         else await this.charge(u, t);
         return;
       }
@@ -795,7 +812,7 @@ export class Battle {
     if (v === 1) {
       const t = await this.pickUnit(plotPool, "누구를 회유합니까?");
       if (!t) return false;
-      this.plot(u, t);
+      await this.plot(u, t);
       return true;
     }
     if (v === 2) {

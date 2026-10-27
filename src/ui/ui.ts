@@ -1,6 +1,6 @@
 import { regionDef } from "../data/regions";
 import { FACTION_INFO } from "../data/scenarios";
-import type { BattleView, IO, Option } from "../engine/io";
+import type { BattleFx, BattleView, IO, Option } from "../engine/io";
 import { freeOfficersIn, menIn, officersIn, seasonName } from "../engine/state";
 import type { FactionId, GameState } from "../engine/types";
 import { officerImg, regionImg } from "./assets";
@@ -229,6 +229,13 @@ export class UI implements IO {
       this.battleMap.render(view);
       this.renderBattleInfo(view);
     } else this.refresh();
+  }
+
+  // 부대 사이 연출을 그리고 끝날 때까지 기다린다 (디버그 패널의 전투 속도는 sleep을 줄인다)
+  async battleFx(f: BattleFx): Promise<void> {
+    if (!this.battle) return;
+    const ms = this.battleMap.play(f);
+    if (ms) await this.sleep(ms);
   }
 
   pickHex(prompt: string, allowed: number[], labels?: Record<number, string>, cancelLabel = "취소"): Promise<number | null> {

@@ -299,3 +299,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .stage * { animation: none !important; }
 }
+
+/* ── 전투 연출 (battleMap.play) ── */
+#battle .fx { pointer-events: none; }
+#battle .fx * { transform-box: fill-box; transform-origin: center; }
+.fx-dmg { font: 800 14px "Nanum Gothic", sans-serif; fill: #ff4b3a; stroke: #1b0d08; stroke-width: 3px; paint-order: stroke; text-anchor: middle; }
+.fx-dmg.small { font-size: 11px; fill: #ffb070; }
+.fx-plot { stroke: #f6d33c; stroke-width: 2.5; stroke-dasharray: 100; fill: none; filter: drop-shadow(0 0 3px rgba(246, 211, 60, 0.8)); }
+.fx-mark { font: 800 22px "Nanum Myeongjo", serif; fill: #c9c2b4; stroke: #1b0d08; stroke-width: 3px; paint-order: stroke; text-anchor: middle; }
+.fx-mark.ok { fill: #f6d33c; }
+.fx-spark { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 6px rgba(255, 180, 60, 0.9)); }

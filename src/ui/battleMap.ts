@@ -3,7 +3,7 @@
 //        엔진의 지형 배치를 기준 이미지로 그렸으므로 지형·성 위치가 규칙과 맞는다.
 // 2순위(그림이 없을 때): 이음매 없는 지형 질감을 이어 붙여 그린다.
 // 부대는 나라별 병사 무리 그림 + 장수 초상 + 병력(백 단위, 총대장은 o)으로 표시한다.
-import type { BattleView, Terrain } from "../engine/io";
+import type { BattleFx, BattleView, Terrain } from "../engine/io";
 import { battleTexImg, battlefieldImg, castleImg, officerImg, troopImg } from "./assets";
 
 const SIZE = 30; // 헥스 반지름
@@ -84,7 +84,7 @@ export class BattleMap {
     for (const u of v.units) {
       const h = v.hexes[u.hex - 1];
       const [cx, cy] = hexCenter(h.col, h.row);
-      const g = el("g", { class: `unit ${u.side}${u.active ? " active" : ""}${u.done ? " done" : ""}`, transform: `translate(${cx},${cy})` });
+      const g = el("g", { class: `unit ${u.side}${u.active ? " active" : ""}${u.done ? " done" : ""}`, transform: `translate(${cx},${cy})`, "data-hex": u.hex });
       if (u.active) g.append(el("ellipse", { cx: 0, cy: 12, rx: 26, ry: 10, class: "halo" }));
       if (u.faction && !this.missingTroop.has(u.faction)) {
         // 나라별 병사 무리 그림
@@ -170,7 +170,176 @@ export class BattleMap {
       g.addEventListener("click", () => this.onClick(h.id));
       cells.append(g);
     }
-    this.svg.append(cells, el("g", { class: "fires" }), el("g", { class: "units" }));
+    this.svg.append(cells, el("g", { class: "fires" }), el("g", { class: "units" }), el("g", { class: "fx" }));
+  }
+
+  // ── 전투 연출 ──
+  // 부대 사이의 움직임을 그리고, 엔진이 기다릴 시간(ms)을 돌려준다.
+  // 부대 그룹은 다음 render()에서 새로 그려지므로 움직임은 그룹 안쪽 요소에 Web Animations로 건다.
+  play(f: BattleFx): number {
+    const v = this.last;
+    const layer = this.svg.querySelector<SVGGElement>(".fx");
+    if (!v || !layer) return 0;
+    const at = (hex: number) => hexCenter(v.hexes[hex - 1].col, v.hexes[hex - 1].row);
+    const [ax, ay] = at(f.from);
+    const [tx, ty] = at(f.to);
+    const unitAt = (hex: number) => this.svg.querySelector<SVGGElement>(`.unit[data-hex="${hex}"]`);
+    const add = <K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string | number>, life: number) => {
+      const e = el(tag, attrs);
+      layer.append(e);
+      setTimeout(() => e.remove(), life);
+      return e;
+    };
+    // 떠오르는 손실 숫자
+    const dmg = (x: number, y: number, n: number | undefined, big: boolean, delay: number) => {
+      if (!n) return;
+      const txt = add("text", { x, y: y - 26, class: big ? "fx-dmg" : "fx-dmg small" }, delay + 1150);
+      txt.textContent = `-${n.toLocaleString("ko-KR")}`;
+      txt.animate([
+        { opacity: 0, transform: "translateY(4px)" },
+        { opacity: 1, transform: "translateY(0)", offset: 0.15 },
+        { opacity: 1, transform: "translateY(-8px)", offset: 0.7 },
+        { opacity: 0, transform: "translateY(-22px)" },
+      ], { duration: 1100, delay, easing: "ease-out", fill: "both" });
+    };
+    // 상대 쪽으로 몸을 던졌다 돌아오기
+    const lunge = (hex: number, k: number, dur: number) => {
+      const g = unitAt(hex);
+      if (!g) return;
+      const dx = (tx - ax) * k;
+      const dy = (ty - ay) * k;
+      for (const c of Array.from(g.children)) {
+        (c as SVGElement).animate([
+          { translate: "0px 0px" },
+          { translate: `${dx}px ${dy}px`, offset: 0.45 },
+          { translate: "0px 0px" },
+        ], { duration: dur, easing: "cubic-bezier(.3,0,.2,1)" });
+      }
+    };
+    const shake = (hex: number, delay: number) => {
+      const g = unitAt(hex);
+      if (!g) return;
+      for (const c of Array.from(g.children)) {
+        (c as SVGElement).animate([
+          { translate: "0px 0px" }, { translate: "-3px 1px" }, { translate: "3px -1px" },
+          { translate: "-2px 0px" }, { translate: "0px 0px" },
+        ], { duration: 260, delay });
+      }
+    };
+    // 부딪치는 섬광: 흰 빛 + 사방으로 튀는 선
+    const spark = (x: number, y: number, delay: number, color = "#fff4c2") => {
+      const outer = add("g", { transform: `translate(${x},${y - 6})` }, delay + 520);
+      const g = el("g", { class: "fx-spark" });
+      outer.append(g);
+      g.append(el("circle", { r: 15, fill: color, opacity: 0.85 }));
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2 + 0.3;
+        g.append(el("line", { x1: Math.cos(a) * 8, y1: Math.sin(a) * 8, x2: Math.cos(a) * 24, y2: Math.sin(a) * 24, stroke: color, "stroke-width": 2.5, "stroke-linecap": "round" }));
+      }
+      g.animate([
+        { opacity: 0, transform: "scale(.3)" },
+        { opacity: 1, transform: "scale(1)", offset: 0.3 },
+        { opacity: 0, transform: "scale(1.3)" },
+      ], { duration: 420, delay, fill: "both" });
+    };
+    // 흙먼지·연기
+    const puff = (x: number, y: number, color: string, delay: number, life = 800) => {
+      for (let i = 0; i < 5; i++) {
+        const a = (i / 5) * Math.PI * 2;
+        const c = add("circle", { cx: x, cy: y + 8, r: 9, fill: color, opacity: 0, class: "fx-puff" }, delay + life + 50);
+        c.animate([
+          { opacity: 0.75, transform: "translate(0px,0px) scale(.5)" },
+          { opacity: 0, transform: `translate(${Math.cos(a) * 18}px,${Math.sin(a) * 10 - 10}px) scale(1.6)` },
+        ], { duration: life, delay, easing: "ease-out", fill: "both" });
+      }
+    };
+    // 포물선으로 날아가는 불화살
+    const arc = (dur: number, draw: (g: SVGGElement) => void) => {
+      const g = add("g", {}, dur + 50);
+      draw(g);
+      const mx = (ax + tx) / 2;
+      const my = Math.min(ay, ty) - 40 - Math.hypot(tx - ax, ty - ay) * 0.25;
+      const frames = Array.from({ length: 9 }, (_, i) => {
+        const t = i / 8;
+        const x = (1 - t) * (1 - t) * ax + 2 * (1 - t) * t * mx + t * t * tx;
+        const y = (1 - t) * (1 - t) * (ay - 10) + 2 * (1 - t) * t * my + t * t * (ty - 10);
+        const nx = 2 * (1 - t) * (mx - ax) + 2 * t * (tx - mx);
+        const ny = 2 * (1 - t) * (my - ay) + 2 * t * (ty - my);
+        return { transform: `translate(${x}px,${y}px) rotate(${Math.atan2(ny, nx)}rad)`, offset: t };
+      });
+      g.animate(frames, { duration: dur, easing: "ease-in", fill: "both" });
+    };
+    // 한 점을 중심으로 커졌다 사라지는 불덩이
+    const blaze = (delay: number, dur: number, peak: number) => {
+      const outer = add("g", { transform: `translate(${tx},${ty})` }, delay + dur + 50);
+      const c = el("circle", { r: 30, fill: "url(#fire-glow)", class: "fx-blaze" });
+      outer.append(c);
+      c.animate([
+        { opacity: 0, transform: "scale(.2)" },
+        { opacity: 1, transform: `scale(${peak})`, offset: 0.4 },
+        { opacity: 0, transform: `scale(${peak + 0.2})` },
+      ], { duration: dur, delay, fill: "both" });
+    };
+
+    switch (f.kind) {
+      case "attack":
+      case "charge": {
+        const charge = f.kind === "charge";
+        const follow = charge && !f.first;
+        const dur = follow ? 260 : charge ? 620 : 520;
+        lunge(f.from, charge ? 0.62 : 0.38, dur);
+        if (charge && f.first) puff(ax, ay, "rgba(200,180,140,.7)", 0, 600);
+        const hitAt = dur * 0.42;
+        spark(tx, ty, hitAt, charge ? "#ffd25a" : "#fff4c2");
+        shake(f.to, hitAt);
+        dmg(tx, ty, f.dmgTo, true, hitAt);
+        dmg(ax, ay, f.dmgFrom, false, hitAt + 80);
+        return follow ? 300 : dur + 320;
+      }
+      case "fire": {
+        arc(560, (g) => {
+          g.append(el("line", { x1: -16, y1: 0, x2: 4, y2: 0, stroke: "#5a3a1a", "stroke-width": 2 }));
+          g.append(el("circle", { cx: 6, cy: 0, r: 9, fill: "#e0582a", opacity: 0.4 }));
+          g.append(el("circle", { cx: 6, cy: 0, r: 5, fill: "#ffb43a" }));
+        });
+        lunge(f.from, 0.12, 300);
+        if (f.ok) blaze(540, 700, 1.25);
+        else puff(tx, ty, "rgba(120,120,120,.7)", 560);
+        return 1150;
+      }
+      case "plot": {
+        const line = add("line", { x1: ax, y1: ay - 6, x2: tx, y2: ty - 6, class: "fx-plot", pathLength: 100 }, 1400);
+        line.animate([{ strokeDashoffset: 100 }, { strokeDashoffset: 0 }], { duration: 600, fill: "both" });
+        const outer = add("g", { transform: `translate(${tx},${ty - 34})` }, 1400);
+        const mark = el("text", { x: 0, y: 8, class: f.ok ? "fx-mark ok" : "fx-mark" });
+        mark.textContent = f.ok ? "成" : "失";
+        outer.append(mark);
+        mark.animate([
+          { opacity: 0, transform: "scale(.4)" },
+          { opacity: 1, transform: "scale(1.15)", offset: 0.6 },
+          { opacity: 1, transform: "scale(1)" },
+        ], { duration: 500, delay: 650, fill: "both" });
+        return 1300;
+      }
+      case "duel": {
+        const mx = (ax + tx) / 2;
+        const my = (ay + ty) / 2 - 10;
+        lunge(f.from, 0.3, 700);
+        const g = add("g", {}, 1300);
+        g.append(el("path", { d: `M${mx - 16} ${my - 16} L${mx + 16} ${my + 16} M${mx + 16} ${my - 16} L${mx - 16} ${my + 16}`, stroke: "#fff4c2", "stroke-width": 4, "stroke-linecap": "round" }));
+        g.animate([{ opacity: 0 }, { opacity: 1, offset: 0.2 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }], { duration: 1200, fill: "both" });
+        for (let i = 0; i < 3; i++) spark(mx, my + 6, 200 + i * 260, "#ffd25a");
+        return 1200;
+      }
+      case "rout":
+        puff(tx, ty, "rgba(190,170,130,.8)", 0, 900);
+        return 0;
+      case "burn":
+        blaze(0, 700, 1);
+        dmg(tx, ty, f.dmgTo, true, 100);
+        return 0;
+    }
+    return 0;
   }
 
   // 그림이 없을 때: 질감을 겹치는 원으로 칠한다

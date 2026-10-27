@@ -60,6 +60,17 @@ export interface BattleView {
   targets: number[]; // 대상 칸
 }
 
+// 전투 연출: 엔진이 행동 하나마다 알려 주면 화면이 부대 사이 움직임을 그린다
+export interface BattleFx {
+  kind: "attack" | "charge" | "fire" | "plot" | "duel" | "rout" | "burn";
+  from: number; // 행동한 부대의 칸 (rout·burn은 대상 칸)
+  to: number; // 대상 칸
+  dmgTo?: number; // 대상의 손실
+  dmgFrom?: number; // 행동한 부대의 손실
+  ok?: boolean; // 화계·이간이 먹혔는가
+  first?: boolean; // 돌격의 첫 타격 (이어지는 타격은 짧게)
+}
+
 export interface IO {
   say(text: string): void;
   clear(): void;
@@ -77,4 +88,6 @@ export interface IO {
   sleep(ms: number): Promise<void>;
   // 기록창 뒤 장면: "title" | "menu" | "spring"… | "cmd0"~"cmd19" | "battle". 화면이 없으면 구현하지 않아도 된다
   scene?(kind: string): void;
+  // 전투 연출. 끝날 때까지 기다린다. 화면이 없으면 구현하지 않아도 된다
+  battleFx?(fx: BattleFx): Promise<void>;
 }
