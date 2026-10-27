@@ -309,3 +309,10 @@ body {
 .fx-mark { font: 800 22px "Nanum Myeongjo", serif; fill: #c9c2b4; stroke: #1b0d08; stroke-width: 3px; paint-order: stroke; text-anchor: middle; }
 .fx-mark.ok { fill: #f6d33c; }
 .fx-spark { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 6px rgba(255, 180, 60, 0.9)); }
+
+/* 공방전이 이어지는 지역 */
+.node .siege { display: none; pointer-events: none; }
+.node.besieged .siege { display: inline; }
+.siege-ring { fill: none; stroke: #c8202e; stroke-width: 2.5; animation: siege-pulse 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.siege-swords { stroke: #c8202e; stroke-width: 3; stroke-linecap: round; paint-order: stroke; filter: drop-shadow(0 0 1.5px #fff); }
+@keyframes siege-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.25); } }

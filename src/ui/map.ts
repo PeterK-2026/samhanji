@@ -93,6 +93,11 @@ export class MapView {
       g.setAttribute("aria-label", `${d.id} ${d.name}`);
       g.append(el("circle", { r: 15, class: "hit" }));
       g.append(el("circle", { r: 10, class: "dot" }));
+      // 공방전이 이어지는 곳: 붉은 고리와 교차한 칼
+      const siege = el("g", { class: "siege" });
+      siege.append(el("circle", { r: 14, class: "siege-ring" }));
+      siege.append(el("path", { d: "M7 -21 L17 -11 M17 -21 L7 -11", class: "siege-swords" }));
+      g.append(siege);
       const num = el("text", { y: 3.5, class: "num" });
       num.textContent = String(d.id);
       g.append(num);
@@ -195,6 +200,7 @@ export class MapView {
       dot.style.fill = info ? info.color : "var(--empty)";
       num.style.fill = info ? info.ink : "var(--ink)";
       g.classList.toggle("focus", id === focus);
+      g.classList.toggle("besieged", !!s.battles?.some((b) => b.target === id));
       g.classList.toggle("selectable", !!selectable?.includes(id));
       g.classList.toggle("dim", !!selectable && !selectable.includes(id));
     }

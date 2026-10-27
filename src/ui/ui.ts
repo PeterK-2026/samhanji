@@ -364,7 +364,7 @@ export class UI implements IO {
     this.infoEl.replaceChildren();
     const top = h("div", "btop");
     top.append(
-      h("span", "btitle", v.title), h("span", undefined, `${v.day}일째 / ${v.maxDay}일`),
+      h("span", "btitle", v.title), h("span", undefined, `${v.day}일째 · 이번 달 ${v.maxDay}일까지`),
       h("span", "bweather", v.weather), h("span", "bwind", v.wind),
     );
     const n = (x: number) => x.toLocaleString("ko-KR");

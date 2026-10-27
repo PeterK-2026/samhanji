@@ -18,6 +18,7 @@ export interface Officer {
   region: number;
   hidden: boolean; // 재야 장수가 아직 발견되지 않음
   alive: boolean;
+  inBattle?: number; // 싸우고 있는 전장(목표 지역 id). 이 동안은 다른 명령을 받지 않는다
 }
 
 export interface Region {
@@ -63,8 +64,53 @@ export interface GameState {
   alliances: string[]; // "a|b"
   queue: number[]; // 이번 달 남은 지역 순서
   foodPrice: number; // 100석당 금
+  battles?: OngoingBattle[]; // 달을 넘겨 이어지는 전투. 예전 저장에는 없다
   lastWar?: Partial<Record<FactionId, number>>; // AI가 마지막으로 출병한 때 (year*12+month). 예전 저장에는 없다
   over: boolean;
+}
+
+// ── 달을 넘기는 전투의 저장 형태 (JSON으로 저장된다) ──
+export interface SavedUnit {
+  id: string; // "__militia"면 수비군
+  faction: FactionId | null;
+  hex: number;
+  home: number; // 전투가 끝나면 돌아갈 지역
+  men?: number; // 수비군 병력 (장수가 아니라 상태에 없다)
+}
+
+export interface SavedSide {
+  faction: FactionId | null;
+  units: SavedUnit[];
+  reserve: string[];
+  commander: string | null;
+  food: number;
+  gold: number;
+  captives: string[];
+}
+
+// 다음 달 전투에 합류할 원군
+export interface Arrival {
+  side: "atk" | "def";
+  faction: FactionId;
+  from: number;
+  officers: string[];
+  food: number;
+  gold: number;
+}
+
+export interface OngoingBattle {
+  target: number;
+  from: number;
+  attacker: FactionId;
+  defender: FactionId | null;
+  day: number; // 다음에 싸울 날 (전체 누적)
+  months: number; // 지금까지 싸운 달 수
+  weather: string;
+  wind: number | null;
+  fires: [number, number][];
+  atk: SavedSide;
+  def: SavedSide;
+  arrivals: Arrival[];
 }
 
 export function pairKey(a: FactionId, b: FactionId): string {

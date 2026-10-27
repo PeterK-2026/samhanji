@@ -429,7 +429,7 @@ const SCENES: Record<string, Builder> = {
     if (!v) return SCENES.menu(id, c);
     const max = Math.max(v.atk.men, v.def.men, 1);
     return [cutout(id, photo(battlefieldImg(v.regionId))),
-      ...headline(`전투 · ${regionOf(c.s, v.regionId).name}`, "출진", "出陣", `${v.atk.label}의 공격, ${v.def.label}의 수비. 30일 안에 본성을 빼앗아야 이긴다.`),
+      ...headline(`전투 · ${regionOf(c.s, v.regionId).name}`, "출진", "出陣", `${v.atk.label}의 공격, ${v.def.label}의 수비. 본성을 빼앗거나 총대장을 꺾어야 끝난다. 못 끝내면 다음 달로 이어진다.`),
       bars([{ label: v.atk.label, v: v.atk.men, max, color: RED, note: `${fmt(v.atk.men)} · 장수 ${v.atk.generals}` },
         { label: v.def.label, v: v.def.men, max, color: INK, note: `${fmt(v.def.men)} · 장수 ${v.def.generals + v.def.reserve}` }], 210, 220)];
   },

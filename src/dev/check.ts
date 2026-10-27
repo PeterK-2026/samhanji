@@ -38,10 +38,11 @@ export function checkInvariants(s: GameState): string[] {
     for (const k of ["int", "war", "chr", "loy", "trn", "arm"] as const) {
       if (!inRange(o[k], 0, 100)) bad(`${at}: ${k} ${o[k]}`);
     }
+    if (o.inBattle && !s.battles?.some((b) => b.target === o.inBattle)) bad(`${at}: 없는 전투(${o.inBattle})에 묶여 있음`);
     if (o.faction) {
       if (!s.factions[o.faction].alive) bad(`${at}: 멸망한 세력 ${o.faction} 소속`);
       const owner = s.regions[o.region - 1].owner;
-      if (owner !== o.faction) bad(`${at}: ${o.faction} 소속인데 ${owner ?? "공백지"} 땅(${o.region})에 있음`);
+      if (owner !== o.faction && !o.inBattle) bad(`${at}: ${o.faction} 소속인데 ${owner ?? "공백지"} 땅(${o.region})에 있음`);
     }
   }
 

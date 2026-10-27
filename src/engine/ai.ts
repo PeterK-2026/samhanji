@@ -1,9 +1,9 @@
 import { regionDef } from "../data/regions";
-import { war } from "./battle";
+import { sendReinforcement, war } from "./battle";
 import { MAX_FOOD } from "./economy";
 import type { IO } from "./io";
 import {
-  adjacent, bestBy, chance, clamp, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, regionOf,
+  adjacent, battleAt, bestBy, chance, clamp, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, regionOf,
 } from "./state";
 import type { FactionId, GameState } from "./types";
 
@@ -73,11 +73,28 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
       return;
     }
   }
-  // 3) 공격
+  // 3) 이어지는 전투에 원군: 맞닿은 곳에서 우리 편이 싸우고 있으면 병력을 보탠다
+  const friend = (x: FactionId | null) => !!x && (x === f || isAllied(s, f, x));
+  for (const n of adjacent(rid)) {
+    const ob = battleAt(s, n);
+    if (!ob || !chance(0.5)) continue;
+    const side = friend(ob.attacker) ? "atk" : friend(ob.defender) ? "def" : null;
+    if (!side) continue;
+    const ruler = s.factions[f].ruler;
+    const spare = [...offs].filter((o) => o.men >= 800 && o.id !== ruler).sort((a, b) => b.men - a.men);
+    const keep = isFrontier(s, rid, f) ? 1 : 0;
+    const go = spare.slice(0, Math.max(0, Math.min(3, offs.length - keep)));
+    if (!go.length) continue;
+    const need = go.reduce((a, o) => a + o.men, 0);
+    sendReinforcement(s, n, side, f, rid, go, Math.min(r.food, Math.ceil(need * 1.2)), Math.min(200, Math.floor(r.gold / 4)));
+    return;
+  }
+
+  // 4) 공격 (다른 나라가 이미 포위 중인 곳은 제외)
   const targets = adjacent(rid)
     .filter((n) => {
       const o = regionOf(s, n).owner;
-      return o !== f && !isAllied(s, f, o);
+      return o !== f && !isAllied(s, f, o) && !battleAt(s, n);
     })
     .map((n) => ({ n, d: defenseStrength(s, n) }))
     .sort((a, b) => a.d - b.d);

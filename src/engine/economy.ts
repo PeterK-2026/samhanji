@@ -124,7 +124,7 @@ export function monthStart(s: GameState): News[] {
 
   // 충성이 낮은 장수의 출분
   for (const o of Object.values(s.officers)) {
-    if (!o.alive || !o.faction || s.factions[o.faction].ruler === o.id) continue;
+    if (!o.alive || !o.faction || o.inBattle || s.factions[o.faction].ruler === o.id) continue;
     if (o.loy < 35 && chance(0.03)) {
       const f = o.faction;
       o.faction = null;

@@ -1,5 +1,6 @@
 import { listSaves, loadGame, saveGame } from "../save";
 import { aiAct } from "./ai";
+import { resumeBattles } from "./battle";
 import { COMMANDS, runCommand, type Ctx } from "./commands";
 import { monthStart } from "./economy";
 import type { IO } from "./io";
@@ -27,6 +28,9 @@ export class Game {
         this.io.refresh();
         if (await this.checkEnd()) break;
         if (news.length) await this.io.pause();
+        // 지난달에 끝나지 않은 공방전을 한 달 더 싸운다
+        await resumeBattles(s, this.io);
+        if (await this.checkEnd()) break;
         await this.checkDelegation();
         s.queue = shuffle(s.regions.filter((r) => r.owner).map((r) => r.id));
       }
@@ -105,7 +109,7 @@ export class Game {
     this.io.refresh(rid);
     const rulerId = s.factions[f].ruler;
     const ruler = rulerId ? s.officers[rulerId].name : s.factions[f].name;
-    // 장수가 없는 지역은 명령을 내릴 수 없으므로 건너뛴다
+    // 장수가 없는 지역은 명령을 내릴 수 없으므로 건너뛴다 (모두 전장에 나가 있거나 포위된 경우 포함)
     if (officersIn(s, rid).length === 0) return "done";
     for (;;) {
       this.io.refresh(rid);

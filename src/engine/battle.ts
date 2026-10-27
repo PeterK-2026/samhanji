@@ -12,9 +12,9 @@ import type { BattleFx, BattleView, IO, Option, SideView } from "./io";
 import { MAX_FOOD, MAX_GOLD } from "./economy";
 import { checkFactions, killOfficer } from "./politics";
 import {
-  adjacent, breakAlliance, capitalOf, chance, changeRelation, clamp, isAllied, officersIn, rand, regionOf,
+  adjacent, battleAt, breakAlliance, capitalOf, chance, changeRelation, clamp, isAllied, officersIn, rand, regionOf,
 } from "./state";
-import type { FactionId, GameState, Officer, Region } from "./types";
+import type { Arrival, FactionId, GameState, OngoingBattle, Officer, Region, SavedSide } from "./types";
 
 export const MAX_DAYS = 30;
 export const MAX_UNITS = 10;
@@ -95,16 +95,15 @@ export class Battle {
   wind: number | null = null;
   fires = new Map<number, number>(); // 칸 → 남은 일수
 
-  constructor(public s: GameState, public io: IO, public from: Region, public target: Region, attacker: FactionId, order: WarOrder) {
+  constructor(public s: GameState, public io: IO, public from: Region, public target: Region, attacker: FactionId, defF: FactionId | null = target.owner) {
     this.field = makeField(target.id * 977 + 31, target.forts);
     this.sea = isSea(from.id, target.id);
     this.edge = edgeFrom(from.id, target.id);
     this.entries = entryHexes(this.field, this.edge);
-    const defF = target.owner;
     this.atk = {
       key: "atk", faction: attacker, label: s.factions[attacker].name,
       player: s.factions[attacker].player && !from.delegated, units: [], reserve: [], commander: null,
-      food: order.food, gold: order.gold, captives: [],
+      food: 0, gold: 0, captives: [],
     };
     this.def = {
       key: "def", faction: defF, label: defF ? s.factions[defF].name : "토착 세력",
@@ -113,10 +112,6 @@ export class Battle {
     };
     this.interactive = this.atk.player || this.def.player;
     this.watch = this.interactive || s.showOtherBattles;
-    for (const o of order.officers.slice(0, MAX_UNITS)) {
-      this.atk.units.push({ o, side: "atk", faction: attacker, hex: 0, done: false, moved: false, gone: false, home: from.id });
-    }
-    this.atk.commander = this.atk.units[0] ?? null;
   }
 
   // ── 편성·배치 ──
@@ -545,7 +540,7 @@ export class Battle {
         };
       }),
       hq: this.field.hq, castles: this.field.castles, fires: [...this.fires.keys()], entries: this.entries,
-      title: `${this.target.name} 공방전`, day: this.day, maxDay: MAX_DAYS,
+      title: `${this.target.name} 공방전`, day: this.day, maxDay: this.monthEnd,
       weather: this.weather, wind: this.wind === null ? "무풍" : `${DIR_ARROW[this.wind]} ${DIR_NAME[this.wind]}풍`,
       atk: this.sideView(this.atk), def: this.sideView(this.def), highlight, targets,
     };
@@ -833,16 +828,14 @@ export class Battle {
     return pool.find((e) => e.hex === h);
   }
 
-  async run(): Promise<SideKey> {
-    if (this.watch) {
-      this.io.clear();
-      this.io.say(`【출진】 ${this.atk.label}이(가) ${this.from.name}에서 ${this.target.name}${this.sea ? "(바닷길)" : ""}을(를) 공격한다!`);
-    }
-    await this.setup();
-    const cmdName = (sd: Side) => sd.commander?.o.name ?? "-";
-    this.log(`공격측 총대장 ${cmdName(this.atk)} · 수비측 총대장 ${cmdName(this.def)}`);
+  // 이번 달 전투가 끝나는 날 (30일씩 끊어 싸운다)
+  monthEnd = MAX_DAYS;
+
+  // 한 달(30일) 동안 싸운다. 승부가 나면 이긴 편, 아니면 null (다음 달로 이어짐)
+  async runMonth(): Promise<SideKey | null> {
+    this.monthEnd = this.day + MAX_DAYS - 1;
     this.render();
-    for (; this.day <= MAX_DAYS && !this.checkEnd(); this.day++) {
+    for (; this.day <= this.monthEnd && !this.checkEnd(); this.day++) {
       for (const u of [...this.atk.units, ...this.def.units]) {
         u.done = false;
         u.moved = false;
@@ -870,19 +863,131 @@ export class Battle {
       this.checkEnd();
       if (this.watch && !this.interactive) await this.io.sleep(200);
     }
-    if (!this.result) this.lose(this.atk, `${MAX_DAYS}일이 지났다. 공격측이 성을 함락하지 못하고 물러난다.`);
-    return this.result!;
+    return this.result;
+  }
+
+  // 달이 바뀔 때 공격측이 물러날지 정한다. 수비측은 성을 버릴 수 없다.
+  async monthDecision(months: number) {
+    const a = this.men(this.atk);
+    const d = this.men(this.def);
+    if (this.atk.player) {
+      this.render();
+      const go = await this.io.confirm(`${this.target.name} 포위 ${months}개월째 — 아군 ${a.toLocaleString("ko-KR")} · 적 ${d.toLocaleString("ko-KR")} · 군량 ${this.atk.food.toLocaleString("ko-KR")}. 포위를 계속합니까? (아니오 = 퇴각)`);
+      if (!go) this.lose(this.atk, `${this.atk.label}이(가) 포위를 풀고 물러났다.`);
+      return;
+    }
+    // AI: 병력이 크게 밀리거나, 군량이 열흘도 안 남았거나, 반년이 지나면 물러난다 [설계]
+    const daily = Math.ceil(a / 30) || 1;
+    if (a < d * 0.5 || this.atk.food < daily * 10 || months >= 6) this.lose(this.atk, `${this.atk.label}이(가) 포위를 풀고 물러났다.`);
+  }
+
+  // ── 달을 넘기는 저장·복원 ──
+  save(months: number, arrivals: Arrival[] = []): OngoingBattle {
+    const side = (sd: Side): SavedSide => ({
+      faction: sd.faction,
+      units: sd.units.filter(isUp).map((u) => ({ id: u.o.id, faction: u.faction, hex: u.hex, home: u.home, men: u.o.id === "__militia" ? u.o.men : undefined })),
+      reserve: sd.reserve.filter((o) => o.alive).map((o) => o.id),
+      commander: sd.commander && isUp(sd.commander) ? sd.commander.o.id : null,
+      food: sd.food, gold: sd.gold,
+      captives: sd.captives.filter((o) => o.alive).map((o) => o.id),
+    });
+    return {
+      target: this.target.id, from: this.from.id, attacker: this.atk.faction!, defender: this.def.faction,
+      day: this.day, months, weather: this.weather, wind: this.wind, fires: [...this.fires],
+      atk: side(this.atk), def: side(this.def), arrivals,
+    };
+  }
+
+  static restore(s: GameState, io: IO, ob: OngoingBattle): Battle {
+    const b = new Battle(s, io, regionOf(s, ob.from), regionOf(s, ob.target), ob.attacker, ob.defender);
+    b.day = ob.day;
+    b.weather = ob.weather as Weather;
+    b.wind = ob.wind;
+    b.fires = new Map(ob.fires);
+    for (const [side, saved] of [[b.atk, ob.atk], [b.def, ob.def]] as const) {
+      for (const su of saved.units) {
+        const o = su.id === "__militia" ? { ...makeMilitia(b.target), men: su.men ?? 0 } : s.officers[su.id];
+        if (!o || !o.alive || o.men <= 0) continue;
+        side.units.push({ o, side: side.key, faction: su.faction, hex: su.hex, done: false, moved: false, gone: false, home: su.home });
+      }
+      side.reserve = saved.reserve.map((id) => s.officers[id]).filter((o) => o?.alive);
+      // 포위 중에 성 안으로 들어온 장수도 수비측 예비로 친다
+      if (side === b.def) for (const o of officersIn(s, b.target.id)) if (!side.reserve.includes(o)) side.reserve.push(o);
+      side.captives = saved.captives.map((id) => s.officers[id]).filter((o) => o?.alive);
+      side.food = saved.food;
+      side.gold = saved.gold;
+      // 총대장이 달 사이에 죽었으면 남은 부대에서 새로 고른다
+      side.commander = side.units.find((u) => u.o.id === saved.commander) ?? null;
+      if (!side.commander && side.units.length) {
+        const pick = pickCommander(side.units.map((u) => u.o), s, side.faction);
+        side.commander = side.units.find((u) => u.o === pick) ?? side.units[0];
+        b.log(`${side.label}의 새 총대장은 ${side.commander.o.name}이다.`);
+      }
+    }
+    // 수비측 창고는 지역 창고다 (그동안 거둔 곡식이 들어 있다)
+    b.def.food = b.target.food;
+    b.def.gold = b.target.gold;
+    return b;
+  }
+
+  // 원군을 전장에 들인다. 공격측은 출발한 쪽 가장자리, 수비측은 성 둘레에 선다.
+  placeArrivals(list: Arrival[]): Officer[] {
+    const sent: Officer[] = [];
+    const taken = new Set(this.up(this.atk).concat(this.up(this.def)).map((u) => u.hex));
+    for (const a of list) {
+      const side = a.side === "atk" ? this.atk : this.def;
+      side.food += a.food;
+      side.gold += a.gold;
+      for (const id of a.officers) {
+        const o = this.s.officers[id];
+        if (!o?.alive || o.men <= 0) continue;
+        if (this.up(side).length >= MAX_UNITS) {
+          sent.push(o); // 자리가 없으면 돌려보낸다
+          continue;
+        }
+        let h: number | undefined;
+        if (a.side === "atk") {
+          const edge = edgeFrom(a.from, this.target.id);
+          h = entryHexes(this.field, edge).find((x) => !taken.has(x));
+        } else {
+          const f = this.field;
+          h = [...f.castles, ...neighbors(f.hq), ...f.castles.flatMap(neighbors)].find((x) => !taken.has(x) && f.terrain[x - 1] !== "river");
+        }
+        h ??= this.nearestFree(a.side === "atk" ? this.entries[0] : this.field.hq, taken);
+        taken.add(h);
+        side.units.push({ o, side: side.key, faction: a.faction, hex: h, done: false, moved: false, gone: false, home: a.from });
+        this.log(`${this.s.factions[a.faction].name}의 ${o.name}이(가) 원군으로 도착했다! (병사 ${o.men.toLocaleString("ko-KR")})`);
+      }
+    }
+    return sent;
+  }
+
+  // 이 전투에 묶인 장수 모두
+  involved(): Officer[] {
+    return [...this.atk.units, ...this.def.units].map((u) => u.o).concat(this.def.reserve).filter((o) => o.id !== "__militia");
   }
 }
 
+// 돌아갈 곳: 집이 아직 자기 나라 땅이면 그대로, 아니면 수도로
+function homeOf(s: GameState, o: Officer, home: number): number {
+  if (o.faction && regionOf(s, home).owner === o.faction) return home;
+  return (o.faction && capitalOf(s, o.faction)) || home;
+}
+
+// 출병: 새 전투를 연다
 export async function war(s: GameState, io: IO, attacker: FactionId, fromId: number, targetId: number, order: WarOrder): Promise<boolean> {
   const from = regionOf(s, fromId);
   const target = regionOf(s, targetId);
   const defF = target.owner;
   from.food -= order.food;
   from.gold -= order.gold;
-  const b = new Battle(s, io, from, target, attacker, order);
-  const log = (t: string) => b.log(t);
+  const b = new Battle(s, io, from, target, attacker);
+  b.atk.food = order.food;
+  b.atk.gold = order.gold;
+  for (const o of order.officers.slice(0, MAX_UNITS)) {
+    b.atk.units.push({ o, side: "atk", faction: attacker, hex: 0, done: false, moved: false, gone: false, home: fromId });
+  }
+  b.atk.commander = b.atk.units[0] ?? null;
 
   if (defF) {
     if (isAllied(s, attacker, defF)) {
@@ -891,8 +996,126 @@ export async function war(s: GameState, io: IO, attacker: FactionId, fromId: num
     }
     changeRelation(s, attacker, defF, -20);
   }
+  if (b.watch) {
+    io.clear();
+    io.say(`【출진】 ${b.atk.label}이(가) ${from.name}에서 ${target.name}${b.sea ? "(바닷길)" : ""}을(를) 공격한다!`);
+  }
+  await b.setup();
+  b.log(`공격측 총대장 ${b.atk.commander?.o.name ?? "-"} · 수비측 총대장 ${b.def.commander?.o.name ?? "-"}`);
+  for (const o of b.involved()) o.inBattle = targetId;
+  return fight(s, io, b, 1);
+}
 
-  const atkWon = (await b.run()) === "atk";
+// 매달 초: 이어지는 전투를 한 달씩 더 싸운다 (game.ts)
+export async function resumeBattles(s: GameState, io: IO) {
+  for (const ob of [...(s.battles ?? [])]) {
+    s.battles = (s.battles ?? []).filter((x) => x !== ob);
+    const target = regionOf(s, ob.target);
+    // 공격국이 망했거나 지역 주인이 바뀌었으면 전투는 흐지부지 끝난다
+    if (!s.factions[ob.attacker].alive || target.owner !== ob.defender) {
+      releaseAll(s, ob);
+      syncFlags(s);
+      io.say(`${target.name}의 공방전은 흐지부지 끝났다.`);
+      continue;
+    }
+    const b = Battle.restore(s, io, ob);
+    if (b.watch) {
+      io.clear();
+      io.say(`【공방전 ${ob.months + 1}개월째】 ${b.atk.label}이(가) ${target.name}을(를) 계속 공격한다.`);
+    }
+    const back = b.placeArrivals(ob.arrivals);
+    for (const o of back) {
+      o.inBattle = undefined;
+      o.region = homeOf(s, o, o.region);
+    }
+    for (const o of b.involved()) o.inBattle = ob.target;
+    await fight(s, io, b, ob.months + 1);
+  }
+}
+
+// 원군 보내기: 다음 달 전투에 합류한다. 장수는 지금부터 전장에 묶인다.
+export function sendReinforcement(s: GameState, target: number, side: "atk" | "def", faction: FactionId, from: number, officers: Officer[], food: number, gold: number) {
+  const ob = battleAt(s, target);
+  if (!ob) return;
+  const r = regionOf(s, from);
+  r.food -= food;
+  r.gold -= gold;
+  for (const o of officers) o.inBattle = target;
+  ob.arrivals.push({ side, faction, from, officers: officers.map((o) => o.id), food, gold });
+}
+
+// 한 달을 싸우고, 승부가 나면 정리하고, 아니면 저장해 다음 달로 넘긴다
+async function fight(s: GameState, io: IO, b: Battle, months: number): Promise<boolean> {
+  let res = await b.runMonth();
+  if (!res) {
+    await b.monthDecision(months);
+    res = b.result;
+  }
+  if (res) {
+    const won = await resolve(s, io, b);
+    syncFlags(s);
+    return won;
+  }
+  // 승부가 나지 않았다: 수비측 창고를 지역에 돌려놓고 다음 달로
+  b.target.food = b.def.food;
+  b.target.gold = b.def.gold;
+  (s.battles ??= []).push(b.save(months));
+  syncFlags(s);
+  if (b.watch) {
+    b.render();
+    b.log(`${months}개월째 공방전이 끝나지 않았다. 다른 지역의 일을 보고 다음 달에 이어 싸운다. (원군을 보낼 수 있다)`);
+    await io.pause("전투는 다음 달로 이어집니다. 계속하려면 아무 키나 누르십시오");
+    io.showBattle(null);
+  }
+  return false;
+}
+
+// 이어지는 전투 어디에도 남지 않은 장수(전장을 떠났거나 무너진 부대 등)의 묶임을 풀고 집으로 보낸다
+function syncFlags(s: GameState) {
+  const held = new Set<string>();
+  for (const ob of s.battles ?? []) {
+    for (const sd of [ob.atk, ob.def]) {
+      for (const u of sd.units) held.add(u.id);
+      for (const id of [...sd.reserve, ...sd.captives]) held.add(id);
+    }
+    for (const a of ob.arrivals) for (const id of a.officers) held.add(id);
+  }
+  for (const o of Object.values(s.officers)) {
+    if (!o.inBattle || held.has(o.id)) continue;
+    o.inBattle = undefined;
+    if (o.alive) o.region = homeOf(s, o, o.region);
+  }
+}
+
+// 저장된 전투를 정리할 때 묶인 장수를 모두 풀어 준다
+function releaseAll(s: GameState, ob: OngoingBattle) {
+  for (const sd of [ob.atk, ob.def]) {
+    for (const u of sd.units) {
+      const o = s.officers[u.id];
+      if (!o) continue;
+      o.inBattle = undefined;
+      if (o.alive) o.region = homeOf(s, o, u.home);
+    }
+    for (const id of sd.reserve) if (s.officers[id]) s.officers[id].inBattle = undefined;
+  }
+  for (const a of ob.arrivals) {
+    for (const id of a.officers) {
+      const o = s.officers[id];
+      if (!o) continue;
+      o.inBattle = undefined;
+      if (o.alive) o.region = homeOf(s, o, a.from);
+    }
+  }
+}
+
+// 승부가 난 전투 정리: 점령·귀환·포로
+async function resolve(s: GameState, io: IO, b: Battle): Promise<boolean> {
+  const attacker = b.atk.faction!;
+  const target = b.target;
+  const targetId = target.id;
+  const log = (t: string) => b.log(t);
+  for (const o of b.involved()) o.inBattle = undefined;
+  const atkWon = b.result === "atk";
   const winner = atkWon ? b.atk : b.def;
   const loser = atkWon ? b.def : b.atk;
 
@@ -901,7 +1124,7 @@ export async function war(s: GameState, io: IO, attacker: FactionId, fromId: num
     for (const u of side.units) if (u.faction === side.faction && u.o.faction !== side.faction && u.o.id !== "__militia") {
       u.o.faction = side.faction;
       u.o.loy = rand(50, 65);
-      u.home = side === b.atk ? fromId : targetId;
+      u.home = side === b.atk ? homeOf(s, u.o, u.home) : targetId;
       u.o.region = u.home;
     }
   }
@@ -913,6 +1136,7 @@ export async function war(s: GameState, io: IO, attacker: FactionId, fromId: num
   // 진 쪽이 잡은 포로는 혼란 중에 풀려난다
   for (const c of loser.captives) if (c.alive) log(`${c.name}이(가) 혼란을 틈타 탈출했다.`);
 
+  const inside = officersIn(s, targetId); // 성 안에 있던 수비측 장수 (예비에 없던 사람 포함)
   if (atkWon) {
     const prevOwner = target.owner;
     target.owner = attacker;
@@ -921,12 +1145,12 @@ export async function war(s: GameState, io: IO, attacker: FactionId, fromId: num
     target.food = Math.min(MAX_FOOD, target.food + b.atk.food);
     target.gold = Math.min(MAX_GOLD, target.gold + b.atk.gold);
     for (const u of b.atk.units) {
-      if (!u.o.alive || captives.includes(u.o) || b.def.captives.includes(u.o)) continue;
-      u.o.region = u.faction === attacker ? targetId : u.home;
+      if (!u.o.alive || captives.includes(u.o) || b.def.captives.includes(u.o) || u.o.id === "__militia") continue;
+      u.o.region = u.faction === attacker ? targetId : homeOf(s, u.o, u.home);
     }
     // 패한 수비 장수(출전·예비): 인접 아군 지역으로 도주하거나 포로가 된다
     const escape = prevOwner ? adjacent(targetId).filter((n) => regionOf(s, n).owner === prevOwner) : [];
-    const losers = [...b.def.units.filter((u) => u.faction === prevOwner).map((u) => u.o), ...b.def.reserve];
+    const losers = [...new Set([...b.def.units.filter((u) => u.faction === prevOwner).map((u) => u.o), ...b.def.reserve, ...inside])];
     for (const o of losers) {
       if (o.id === "__militia" || !o.alive || captives.includes(o) || o.faction !== prevOwner) continue;
       if (escape.length && chance(o.men > 0 ? 0.65 : 0.45)) {
@@ -934,16 +1158,20 @@ export async function war(s: GameState, io: IO, attacker: FactionId, fromId: num
         log(`${o.name}은(는) ${regionOf(s, o.region).name}(으)로 달아났다.`);
       } else captives.push(o);
     }
-    for (const u of b.def.units) if (u.faction !== prevOwner && u.o.alive) u.o.region = u.home; // 원군 귀환
+    for (const u of b.def.units) if (u.faction !== prevOwner && u.o.alive && u.o.id !== "__militia") u.o.region = homeOf(s, u.o, u.home); // 원군 귀환
     if (b.watch) io.say(`${b.atk.label}이(가) ${target.name}을(를) 점령했다!`);
   } else {
-    from.food = Math.min(MAX_FOOD, from.food + b.atk.food);
-    from.gold = Math.min(MAX_GOLD, from.gold + b.atk.gold);
-    for (const u of b.atk.units) {
-      if (!u.o.alive || captives.includes(u.o)) continue;
-      u.o.region = u.faction === attacker ? fromId : u.home;
+    // 공격측은 각자 떠나온 곳으로 돌아간다. 남은 군량·금은 첫 출발지로
+    const from = regionOf(s, homeOf(s, { faction: attacker } as Officer, b.from.id));
+    if (from.owner === attacker) {
+      from.food = Math.min(MAX_FOOD, from.food + b.atk.food);
+      from.gold = Math.min(MAX_GOLD, from.gold + b.atk.gold);
     }
-    for (const u of b.def.units) if (u.o.alive && u.faction !== defF) u.o.region = u.home;
+    for (const u of b.atk.units) {
+      if (!u.o.alive || captives.includes(u.o) || u.o.id === "__militia") continue;
+      u.o.region = homeOf(s, u.o, u.home);
+    }
+    for (const u of b.def.units) if (u.o.alive && u.faction !== b.def.faction && u.o.id !== "__militia") u.o.region = homeOf(s, u.o, u.home);
     if (b.watch) io.say(`${b.def.label}이(가) ${target.name}을(를) 지켜냈다.`);
   }
 

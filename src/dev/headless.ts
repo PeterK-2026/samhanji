@@ -16,6 +16,7 @@ export interface RunOptions {
   seed: number;
   players?: FactionId[]; // 비우면 AI끼리
   monkey?: boolean; // 플레이어 선택을 무작위로
+  showBattles?: boolean; // 다른 세력 전투도 기록(log)으로 받는다
   mode?: Mode;
   difficulty?: 1 | 2 | 3;
   maxCallsPerMonth?: number; // 한 달에 IO 호출이 이보다 많으면 무한 루프로 본다
@@ -50,7 +51,7 @@ export interface RunResult {
 export async function runHeadless(opt: RunOptions): Promise<RunResult> {
   const restore = seedRandom(opt.seed);
   const t0 = performance.now();
-  const s = createGame(opt.scenario, opt.players ?? [], opt.mode ?? "history", opt.difficulty ?? 2, false);
+  const s = createGame(opt.scenario, opt.players ?? [], opt.mode ?? "history", opt.difficulty ?? 2, !!opt.showBattles);
   const startYear = s.year;
   const endYear = s.year + opt.years;
   const maxCalls = opt.maxCallsPerMonth ?? 20000;

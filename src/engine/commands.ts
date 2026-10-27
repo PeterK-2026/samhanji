@@ -1,12 +1,11 @@
 import { OFFICER_BY_ID } from "../data/officers";
 import { regionDef } from "../data/regions";
-import { MAX_UNITS, war } from "./battle";
+import { MAX_UNITS, sendReinforcement, war } from "./battle";
 import { MAX_FOOD, MAX_GOLD, factionTotals } from "./economy";
 import type { IO, Option } from "./io";
 import { regionLabel } from "./politics";
 import {
-  adjacent, age, bestBy, breakAlliance, chance, changeRelation, clamp, connectedOwn,
-  factionOfficers, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, regionOf, relation,
+  adjacent, age, battleAt, bestBy, breakAlliance, chance, changeRelation, clamp, connectedOwn, factionOfficers, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, regionOf, relation,
 } from "./state";
 import { FACTION_IDS, pairKey, type FactionId, type GameState, type Officer } from "./types";
 
@@ -105,11 +104,32 @@ async function cmdSend(c: Ctx): Promise<boolean> {
 }
 
 // ── 3 전쟁 ──
+// 이어지는 전투에 우리가 낄 수 있는 편 (없으면 null)
+function joinSide(c: Ctx, t: number): "atk" | "def" | null {
+  const ob = battleAt(c.s, t);
+  if (!ob) return null;
+  const friend = (x: FactionId | null) => !!x && (x === c.f || isAllied(c.s, c.f, x));
+  if (friend(ob.attacker)) return "atk";
+  if (friend(ob.defender)) return "def";
+  return null;
+}
+
 async function cmdWar(c: Ctx): Promise<boolean> {
-  const targets = adjacent(c.rid).filter((n) => regionOf(c.s, n).owner !== c.f);
-  if (!targets.length) return c.io.say("공격할 수 있는 지역이 없습니다."), false;
-  const t = await c.io.pickRegion("어느 지역을 공격합니까?", targets);
+  // 공격: 맞닿은 남의 지역 (다른 나라가 이미 포위 중인 곳은 제외) / 원군: 맞닿은 곳에서 벌어지는 우리 편 전투
+  const targets = adjacent(c.rid).filter((n) => {
+    const ob = battleAt(c.s, n);
+    if (ob) return joinSide(c, n) !== null;
+    return regionOf(c.s, n).owner !== c.f;
+  });
+  if (!targets.length) return c.io.say("공격하거나 원군을 보낼 수 있는 지역이 없습니다."), false;
+  for (const n of targets) {
+    const ob = battleAt(c.s, n);
+    if (ob) c.io.say(`${regionOf(c.s, n).name}: ${c.s.factions[ob.attacker].name}의 포위 ${ob.months}개월째 — ${joinSide(c, n) === "atk" ? "공격측" : "수비측"} 원군으로 합류할 수 있습니다.`);
+  }
+  const t = await c.io.pickRegion("어느 지역을 공격합니까? (전투 중인 곳은 원군)", targets);
   if (!t) return false;
+  const join = joinSide(c, t);
+  if (join) return cmdReinforce(c, t, join);
   const tr = regionOf(c.s, t);
   if (tr.owner && isAllied(c.s, c.f, tr.owner)) {
     if (!(await c.io.confirm(`${c.s.factions[tr.owner].name}은(는) 동맹국입니다. 동맹을 깨고 공격합니까?`))) return false;
@@ -132,6 +152,23 @@ async function cmdWar(c: Ctx): Promise<boolean> {
   c.io.say(`목표 ${tr.name} · 군주 ${tr.owner && c.s.factions[tr.owner].ruler ? c.s.officers[c.s.factions[tr.owner].ruler!].name : "-"} · 적 병력 약 ${Math.round(foeMen / 1000) * 1000} · 군량 ${food} · 금 ${gold}`);
   if (!(await c.io.confirm("출진합니까?"))) return false;
   await war(c.s, c.io, c.f, c.rid, t, { officers: army, food, gold });
+  return true;
+}
+
+// 이어지는 전투에 원군을 보낸다. 다음 달 전투부터 전장에 들어선다.
+async function cmdReinforce(c: Ctx, t: number, side: "atk" | "def"): Promise<boolean> {
+  const tr = regionOf(c.s, t);
+  const army = await pickOfficers(c, `${tr.name}에 보낼 원군 (${side === "atk" ? "공격측" : "수비측"})`, officersIn(c.s, c.rid).filter((o) => o.men > 0));
+  if (!army.length) return false;
+  if (army.length > MAX_UNITS) army.length = MAX_UNITS;
+  const r = owned(c);
+  const men = army.reduce((a, o) => a + o.men, 0);
+  const food = await c.io.number(`가져갈 군량 (0~${r.food}) — 한 달 분 ${men}석`, 0, r.food, Math.min(r.food, men));
+  if (food === null) return false;
+  const gold = (await c.io.number(`가져갈 금 (0~${r.gold})`, 0, r.gold, Math.min(r.gold, 100))) ?? 0;
+  if (!(await c.io.confirm(`${army.map((o) => o.name).join(", ")}을(를) ${tr.name}에 원군으로 보냅니까?`))) return false;
+  sendReinforcement(c.s, t, side, c.f, c.rid, army, food, gold);
+  c.io.say(`${army.map((o) => o.name).join(", ")}이(가) ${tr.name}(으)로 떠났다. 다음 달 전투에 합류한다.`);
   return true;
 }
 

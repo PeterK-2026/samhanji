@@ -181,8 +181,10 @@ export function spawnFreeOfficers(state: GameState): Officer[] {
 
 // ── 조회 함수 ──
 export const regionOf = (s: GameState, id: number) => s.regions[id - 1];
+// 전투 중(inBattle)인 장수는 빼고 센다
 export const officersIn = (s: GameState, rid: number) =>
-  Object.values(s.officers).filter((o) => o.alive && o.region === rid && o.faction !== null && o.faction === regionOf(s, rid).owner);
+  Object.values(s.officers).filter((o) => o.alive && !o.inBattle && o.region === rid && o.faction !== null && o.faction === regionOf(s, rid).owner);
+export const battleAt = (s: GameState, rid: number) => s.battles?.find((b) => b.target === rid);
 export const freeOfficersIn = (s: GameState, rid: number) =>
   Object.values(s.officers).filter((o) => o.alive && o.region === rid && o.faction === null);
 export const menIn = (s: GameState, rid: number) => officersIn(s, rid).reduce((a, o) => a + o.men, 0);
