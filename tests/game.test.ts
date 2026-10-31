@@ -20,6 +20,25 @@ describe("AI 대 AI", () => {
   });
 });
 
+describe("평가 사건 집계", () => {
+  it("출병·전투·점령이 앞뒤가 맞게 세어진다", async () => {
+    const r = await runHeadless({ scenario: 1, years: 10, seed: 3 });
+    expect(r.wars).toBeGreaterThan(0);
+    expect(r.captures).toBeGreaterThan(0);
+    expect(r.battles).toBeLessThanOrEqual(r.wars);
+    expect(r.atkWins).toBe(r.captures); // 공격측이 이기면 그 지역을 점령한다
+    expect(r.recaptures).toBeLessThanOrEqual(r.captures);
+    expect(r.years.reduce((a, y) => a + y.wars, 0)).toBeLessThanOrEqual(r.wars);
+    expect(r.years.length).toBeGreaterThanOrEqual(9);
+  });
+
+  it("멸망한 세력은 원인이 남는다", async () => {
+    const r = await runHeadless({ scenario: 4, years: 40, seed: 2 });
+    expect(Object.keys(r.destroyed).length).toBeGreaterThan(0);
+    expect(Object.keys(r.falls).sort()).toEqual(Object.keys(r.destroyed).sort());
+  });
+});
+
 describe("몽키 테스트: 플레이어 선택을 무작위로", () => {
   const cases: [number, FactionId, number][] = [
     [1, "silla", 1], [1, "goguryeo", 2], [2, "baekje", 3], [2, "tang", 4], [3, "silla", 5], [4, "silla", 6],

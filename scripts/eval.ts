@@ -20,6 +20,8 @@ const median = (xs: number[]) => {
   return a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2;
 };
 const f1 = (n: number) => (Number.isNaN(n) ? "-" : n.toFixed(1));
+// 비율의 95% 신뢰구간 폭 (판 수가 적으면 커진다)
+const moe = (p: number, n: number) => (n ? `±${Math.round(1.96 * Math.sqrt((Math.max(p * (1 - p), 0.25 / n)) / n) * 100)}` : "");
 
 interface Summary {
   scenario: number;
@@ -33,8 +35,16 @@ interface Summary {
   medianWinYears: number; // 통일까지 걸린 햇수 (중앙값)
   survival: Partial<Record<FactionId, number>>; // 끝까지 살아남은 비율
   avgRegions: Partial<Record<FactionId, number>>;
+  warsPerYear: number;
   capturesPerYear: number;
-  quietYears: number; // 점령이 한 번도 없었던 해의 비율
+  recaptureShare: number; // 점령 중 12개월 안의 탈환 비율
+  atkWinRate: number; // 승부가 난 전투 중 공격측 승리 비율
+  avgBattleMonths: number;
+  noWarYears: number; // 출병이 한 번도 없었던 해의 비율
+  fruitlessYears: number; // 출병은 있었으나 점령이 없었던 해의 비율
+  netChangePerYear: number; // 1년 사이 주인이 달라진 지역 수
+  extinct: number; // 모든 세력이 사라진 판 수
+  falls: Partial<Record<FactionId, { conquest: number; heirless: number }>>;
   msPerYear: number;
   warnings: string[];
 }
@@ -50,17 +60,19 @@ function summarize(sc: (typeof SCENARIOS)[number], rs: RunResult[]): Summary {
     survival[f] = done.filter((r) => r.final[f].alive).length / (done.length || 1);
     avgRegions[f] = avg(done.map((r) => r.final[f].regions));
   }
-  // 연초 기록 사이 영토 변화가 없었던 해
-  let quiet = 0;
-  let spans = 0;
-  for (const r of done) {
-    for (let i = 1; i < r.history.length; i++) {
-      if (r.winner && r.history[i].year > (r.winYear ?? 0)) break;
-      spans++;
-      if (FACTION_IDS.every((f) => r.history[i].regions[f] === r.history[i - 1].regions[f])) quiet++;
-    }
+  const falls: Summary["falls"] = {};
+  for (const f of present) {
+    falls[f] = {
+      conquest: done.filter((r) => r.falls[f] === "conquest").length,
+      heirless: done.filter((r) => r.falls[f] === "heirless").length,
+    };
   }
-  const played = done.reduce((a, r) => a + r.months / 12, 0);
+  // 승부가 났거나 모든 세력이 사라진 뒤의 해는 뺀다
+  const years = done.flatMap((r) => r.years.filter((y) => y.year < (r.winYear ?? r.extinctYear ?? Infinity)));
+  const nYears = years.length || 1;
+  const sum = (pick: (r: RunResult) => number) => done.reduce((a, r) => a + pick(r), 0);
+  const captures = sum((r) => r.captures);
+  const battles = sum((r) => r.battles);
   const s: Summary = {
     scenario: sc.id, title: sc.title, year: sc.year, runs: rs.length,
     errors: rs.filter((r) => r.error).length,
@@ -69,8 +81,16 @@ function summarize(sc: (typeof SCENARIOS)[number], rs: RunResult[]): Summary {
     winners,
     medianWinYears: median(done.filter((r) => r.winYear).map((r) => r.winYear! - r.startYear)),
     survival, avgRegions,
-    capturesPerYear: done.reduce((a, r) => a + r.captures, 0) / (played || 1),
-    quietYears: spans ? quiet / spans : 0,
+    warsPerYear: years.reduce((a, y) => a + y.wars, 0) / nYears,
+    capturesPerYear: years.reduce((a, y) => a + y.captures, 0) / nYears,
+    recaptureShare: captures ? sum((r) => r.recaptures) / captures : 0,
+    atkWinRate: battles ? sum((r) => r.atkWins) / battles : 0,
+    avgBattleMonths: battles ? sum((r) => r.battleMonths) / battles : 0,
+    noWarYears: years.filter((y) => !y.wars).length / nYears,
+    fruitlessYears: years.filter((y) => y.wars && !y.captures).length / nYears,
+    netChangePerYear: years.reduce((a, y) => a + y.changed, 0) / nYears,
+    extinct: done.filter((r) => r.extinctYear !== null).length,
+    falls,
     msPerYear: rs.reduce((a, r) => a + r.ms, 0) / (rs.reduce((a, r) => a + r.months / 12, 0) || 1),
     warnings: [],
   };
@@ -82,7 +102,9 @@ function summarize(sc: (typeof SCENARIOS)[number], rs: RunResult[]): Summary {
   if (top && done.length >= 5 && top[1] / done.length > 0.8) w.push(`⚠️ ${name(top[0] as FactionId)} 통일 ${pct(top[1], done.length)} — 한 세력이 지나치게 강함`);
   if (done.length >= 5 && s.unified / done.length < 0.1) w.push(`⚠️ ${years}년 안에 통일된 판이 ${pct(s.unified, done.length)} — 교착 상태가 잦음`);
   if (!Number.isNaN(s.medianWinYears) && s.medianWinYears < 8) w.push(`⚠️ 통일까지 중앙값 ${s.medianWinYears}년 — 너무 빨리 끝남`);
-  if (s.quietYears > 0.5) w.push(`⚠️ 영토 변화가 없는 해가 ${pct(s.quietYears, 1)} — 전쟁이 드묾`);
+  if (s.noWarYears > 0.3) w.push(`⚠️ 출병이 없는 해가 ${pct(s.noWarYears, 1)} — 전쟁이 드묾`);
+  if (s.fruitlessYears > 0.3) w.push(`⚠️ 출병해도 점령이 없는 해가 ${pct(s.fruitlessYears, 1)} — 공격이 성과를 못 냄`);
+  if (s.extinct) w.push(`⚠️ 모든 세력이 사라진 판 ${s.extinct}개 — 후반에 인물이 바닥남`);
   for (const f of present) {
     if ((survival[f] ?? 0) === 0 && done.length >= 5) w.push(`⚠️ ${name(f)}이(가) 한 판도 살아남지 못함`);
   }
@@ -96,21 +118,30 @@ function markdown(sums: Summary[], all: RunResult[][]): string {
   L.push(`- 조건: 시나리오마다 ${runs}판 × 최대 ${years}년, AI끼리, 난이도 중급, 역사 모드, 시드 1~${runs}`);
   L.push(`- 재현: \`npm run eval -- ${runs} ${years} ${only.join(",")}\` (같은 시드면 같은 결과)`, "");
   L.push("## 요약", "");
-  L.push("| 시나리오 | 통일 | 통일 세력 | 통일까지(중앙값) | 연간 점령 | 교착 해 | 오류 | 위반 |");
-  L.push("|---|---|---|---|---|---|---|---|");
+  L.push("| 시나리오 | 통일 | 통일 세력 | 통일까지(중앙값) | 전멸 판 | 오류 | 위반 |");
+  L.push("|---|---|---|---|---|---|---|");
   for (const s of sums) {
     const win = Object.entries(s.winners).sort((a, b) => b[1] - a[1]).map(([f, n]) => `${name(f as FactionId)} ${n}`).join(", ") || "-";
-    L.push(`| ${s.scenario}. ${s.title} (${s.year}) | ${pct(s.unified, s.runs - s.errors)} | ${win} | ${f1(s.medianWinYears)}년 | ${f1(s.capturesPerYear)} | ${pct(s.quietYears, 1)} | ${s.errors} | ${s.violations} |`);
+    const n = s.runs - s.errors;
+    L.push(`| ${s.scenario}. ${s.title} (${s.year}) | ${pct(s.unified, n)} ${moe(s.unified / (n || 1), n)} | ${win} | ${f1(s.medianWinYears)}년 | ${s.extinct} | ${s.errors} | ${s.violations} |`);
+  }
+  L.push("");
+  L.push("### 전쟁 지표", "");
+  L.push("| 시나리오 | 연간 출병 | 연간 점령 | 탈환 비율 | 공격 승률 | 전투 기간 | 연간 순변화 | 무전쟁 해 | 무소득 해 |");
+  L.push("|---|---|---|---|---|---|---|---|---|");
+  for (const s of sums) {
+    L.push(`| ${s.scenario}. ${s.title} | ${f1(s.warsPerYear)} | ${f1(s.capturesPerYear)} | ${pct(s.recaptureShare, 1)} | ${pct(s.atkWinRate, 1)} | ${f1(s.avgBattleMonths)}개월 | ${f1(s.netChangePerYear)}곳 | ${pct(s.noWarYears, 1)} | ${pct(s.fruitlessYears, 1)} |`);
   }
   L.push("");
   for (const [i, s] of sums.entries()) {
     L.push(`## ${s.scenario}. ${s.title} (${s.year}년)`, "");
     L.push(s.warnings.length ? s.warnings.map((w) => `- ${w}`).join("\n") : "- ✅ 기준선 안에 있음");
     L.push("");
-    L.push("| 세력 | 생존율 | 평균 최종 지역 | 통일 |");
-    L.push("|---|---|---|---|");
+    L.push("| 세력 | 생존율 | 평균 최종 지역 | 통일 | 정복당함 | 후계 끊김 |");
+    L.push("|---|---|---|---|---|---|");
     for (const f of Object.keys(s.survival) as FactionId[]) {
-      L.push(`| ${name(f)} | ${pct(s.survival[f]!, 1)} | ${f1(s.avgRegions[f]!)} | ${s.winners[f] ?? 0} |`);
+      const n = s.runs - s.errors;
+      L.push(`| ${name(f)} | ${pct(s.survival[f]!, 1)} ${moe(s.survival[f]!, n)} | ${f1(s.avgRegions[f]!)} | ${s.winners[f] ?? 0} | ${s.falls[f]?.conquest ?? 0} | ${s.falls[f]?.heirless ?? 0} |`);
     }
     L.push("");
     const bad = all[i].filter((r) => r.error || r.violations.length);
@@ -131,8 +162,14 @@ function markdown(sums: Summary[], all: RunResult[][]): string {
   }
   L.push("## 읽는 법", "");
   L.push("- **통일**: 한반도·요동 지역(korea 표시)을 한 세력이 모두 차지한 판의 비율.");
-  L.push("- **연간 점령**: 1년에 지역 주인이 바뀐 평균 횟수. 전쟁이 얼마나 활발한지 보여 준다.");
-  L.push("- **교착 해**: 연초 기준으로 영토 변화가 전혀 없었던 해의 비율 (통일 이후는 뺌).");
+  L.push("- **±**: 비율의 95% 신뢰구간 폭(퍼센트포인트). 두 보고서의 차이가 이보다 작으면 우연일 수 있다.");
+  L.push("- **전멸 판**: 모든 세력이 사라진 판 수. 아래 연간 지표는 승부가 났거나 전멸한 뒤의 해를 뺀다.");
+  L.push("- **연간 출병·점령**: 사건을 직접 센 값. 같은 달의 재점령도 빠지지 않는다.");
+  L.push("- **탈환 비율**: 점령 중 12개월 안에 빼앗겼던 땅을 되찾은 비율. 높으면 뺏고 뺏기는 소모전이다.");
+  L.push("- **공격 승률·전투 기간**: 승부가 난 전투 기준. 흐지부지 끝난 공방전은 뺀다.");
+  L.push("- **연간 순변화**: 연초와 연말의 주인이 다른 지역 수. 연간 점령보다 많이 작으면 제자리걸음이다.");
+  L.push("- **무전쟁 해**: 출병이 한 번도 없었던 해. **무소득 해**: 출병은 있었으나 점령이 없었던 해.");
+  L.push("- **정복당함·후계 끊김**: 멸망 원인. 후계 끊김은 영토가 남아 있어도 이을 장수가 없어 망한 경우다.");
   L.push("- **위반**: `src/dev/check.ts`의 상태 불변식(장수 위치, 자원 한도, 군주 상태 등)을 어긴 판 수. 0이어야 한다.");
   return L.join("\n") + "\n";
 }

@@ -1,4 +1,6 @@
 // 엔진이 화면과 주고받는 인터페이스. ui/ 쪽에서 구현한다.
+import type { FactionId } from "./types";
+
 export interface Option {
   value: number;
   label: string;
@@ -72,6 +74,12 @@ export interface BattleFx {
   first?: boolean; // 돌격의 첫 타격 (이어지는 타격은 짧게)
 }
 
+// 평가 도구가 세는 사건. 화면에는 쓰지 않는다
+export type GameEvent =
+  | { kind: "war" } // 새 출병
+  | { kind: "battleEnd"; atkWon: boolean; months: number } // 승부가 난 전투
+  | { kind: "capture"; region: number; from: FactionId | null; to: FactionId }; // 지역 점령
+
 export interface IO {
   say(text: string): void;
   clear(): void;
@@ -91,4 +99,6 @@ export interface IO {
   scene?(kind: string): void;
   // 전투 연출. 끝날 때까지 기다린다. 화면이 없으면 구현하지 않아도 된다
   battleFx?(fx: BattleFx): Promise<void>;
+  // 사건 기록. 평가 도구만 구현한다
+  event?(e: GameEvent): void;
 }

@@ -1009,6 +1009,7 @@ export async function war(s: GameState, io: IO, attacker: FactionId, fromId: num
     io.clear();
     io.say(`【출진】 ${b.atk.label}이(가) ${from.name}에서 ${target.name}${b.sea ? "(바닷길)" : ""}을(를) 공격한다!`);
   }
+  io.event?.({ kind: "war" });
   await b.setup();
   b.log(`공격측 총대장 ${b.atk.commander?.o.name ?? "-"} · 수비측 총대장 ${b.def.commander?.o.name ?? "-"}`);
   for (const o of b.involved()) o.inBattle = targetId;
@@ -1061,6 +1062,7 @@ async function fight(s: GameState, io: IO, b: Battle, months: number): Promise<b
     res = b.result;
   }
   if (res) {
+    io.event?.({ kind: "battleEnd", atkWon: res === "atk", months });
     const won = await resolve(s, io, b);
     syncFlags(s);
     return won;
@@ -1148,6 +1150,7 @@ async function resolve(s: GameState, io: IO, b: Battle): Promise<boolean> {
   const inside = officersIn(s, targetId); // 성 안에 있던 수비측 장수 (예비에 없던 사람 포함)
   if (atkWon) {
     const prevOwner = target.owner;
+    io.event?.({ kind: "capture", region: targetId, from: prevOwner, to: attacker });
     target.owner = attacker;
     target.delegated = false;
     target.loyalty = clamp(target.loyalty - 10, 0, 100);

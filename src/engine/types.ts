@@ -45,6 +45,7 @@ export interface Faction {
   ruler: string | null;
   alive: boolean;
   player: boolean;
+  fallCause?: "conquest" | "heirless"; // 멸망 원인: 영토를 모두 잃음 / 군주가 죽었는데 이을 장수가 없음
 }
 
 export type Mode = "history" | "fiction";

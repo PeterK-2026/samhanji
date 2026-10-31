@@ -20,7 +20,7 @@ export function succeed(s: GameState, f: FactionId, old: Officer): string[] {
   if (!heir) heir = members.sort((a, b) => b.chr + b.int - (a.chr + a.int))[0];
   if (!heir) {
     fac.ruler = null;
-    return destroyFaction(s, f);
+    return destroyFaction(s, f, "heirless");
   }
   fac.ruler = heir.id;
   heir.loy = 100;
@@ -34,10 +34,11 @@ export function succeed(s: GameState, f: FactionId, old: Officer): string[] {
   return msgs;
 }
 
-export function destroyFaction(s: GameState, f: FactionId): string[] {
+export function destroyFaction(s: GameState, f: FactionId, cause: "conquest" | "heirless"): string[] {
   const fac = s.factions[f];
   if (!fac.alive) return [];
   fac.alive = false;
+  fac.fallCause = cause;
   fac.ruler = null;
   for (const r of regionsOf(s, f)) r.owner = null;
   for (const o of factionOfficers(s, f)) {
@@ -53,7 +54,7 @@ export function destroyFaction(s: GameState, f: FactionId): string[] {
 export function checkFactions(s: GameState): string[] {
   const msgs: string[] = [];
   for (const f of Object.values(s.factions)) {
-    if (f.alive && regionsOf(s, f.id).length === 0) msgs.push(...destroyFaction(s, f.id));
+    if (f.alive && regionsOf(s, f.id).length === 0) msgs.push(...destroyFaction(s, f.id, "conquest"));
   }
   return msgs;
 }

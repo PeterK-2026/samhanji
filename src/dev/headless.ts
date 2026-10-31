@@ -29,6 +29,14 @@ export interface Snapshot {
   regions: Record<FactionId, number>;
 }
 
+// 한 해의 사건 (달력 기준, 끝나지 않은 마지막 해는 뺌)
+export interface YearStat {
+  year: number;
+  wars: number; // 새 출병
+  captures: number; // 지역 점령
+  changed: number; // 연초와 주인이 달라진 지역 수
+}
+
 export interface RunResult {
   scenario: number;
   seed: number;
@@ -39,7 +47,15 @@ export interface RunResult {
   winner: FactionId | null; // 삼한 통일
   winYear: number | null;
   destroyed: Partial<Record<FactionId, number>>; // 멸망 연도
-  captures: number; // 지역 주인이 바뀐 횟수
+  captures: number; // 지역 점령 횟수
+  recaptures: number; // 그중 12개월 안에 빼앗겼던 땅을 되찾은 횟수
+  wars: number; // 새 출병 횟수
+  battles: number; // 승부가 난 전투 수
+  atkWins: number; // 그중 공격측 승리
+  battleMonths: number; // 승부가 난 전투의 개월 수 합
+  years: YearStat[];
+  falls: Partial<Record<FactionId, "conquest" | "heirless">>; // 멸망 원인
+  extinctYear: number | null; // 모든 세력이 사라진 해
   ioCalls: number;
   final: Record<FactionId, { alive: boolean; regions: number; officers: number; men: number; gold: number; food: number }>;
   history: Snapshot[]; // 매년 1월 영토
@@ -57,11 +73,13 @@ export async function runHeadless(opt: RunOptions): Promise<RunResult> {
   const maxCalls = opt.maxCallsPerMonth ?? 20000;
   const res: RunResult = {
     scenario: opt.scenario, seed: opt.seed, startYear, endYear: s.year, endMonth: s.month, months: 0,
-    winner: null, winYear: null, destroyed: {}, captures: 0, ioCalls: 0,
+    winner: null, winYear: null, destroyed: {}, captures: 0, recaptures: 0, wars: 0, battles: 0, atkWins: 0, battleMonths: 0, years: [], falls: {}, extinctYear: null, ioCalls: 0,
     final: {} as RunResult["final"], history: [], violations: [], error: null, ms: 0,
   };
   const seen = new Set<string>();
-  let owners = s.regions.map((r) => r.owner);
+  let yearOwners = s.regions.map((r) => r.owner);
+  let cur: YearStat = { year: s.year, wars: 0, captures: 0, changed: 0 };
+  const lost = new Map<number, { from: FactionId; at: number }>(); // 지역별 마지막으로 빼앗긴 세력과 때
   let lastKey = "";
   let monthCalls = 0;
 
@@ -81,8 +99,13 @@ export async function runHeadless(opt: RunOptions): Promise<RunResult> {
     lastKey = key;
     res.months++;
     monthCalls = 0;
-    for (const [i, r] of s.regions.entries()) if (r.owner !== owners[i]) res.captures++;
-    owners = s.regions.map((r) => r.owner);
+    if (s.year !== cur.year) {
+      cur.changed = s.regions.filter((r, i) => r.owner !== yearOwners[i]).length;
+      res.years.push(cur);
+      cur = { year: s.year, wars: 0, captures: 0, changed: 0 };
+      yearOwners = s.regions.map((r) => r.owner);
+    }
+    if (res.extinctYear === null && !FACTION_IDS.some((f) => s.factions[f].alive)) res.extinctYear = s.year;
     if (s.month === 1) res.history.push(snapshot());
     for (const v of checkInvariants(s)) {
       if (seen.has(v) || res.violations.length >= 50) continue;
@@ -130,6 +153,23 @@ export async function runHeadless(opt: RunOptions): Promise<RunResult> {
       return a.length && Math.random() < 0.95 ? a[rnd(a.length)] : null;
     },
     sleep: async () => {},
+    event(e) {
+      if (e.kind === "war") {
+        res.wars++;
+        cur.wars++;
+      } else if (e.kind === "battleEnd") {
+        res.battles++;
+        res.battleMonths += e.months;
+        if (e.atkWon) res.atkWins++;
+      } else {
+        res.captures++;
+        cur.captures++;
+        const now = s.year * 12 + s.month;
+        const prev = lost.get(e.region);
+        if (prev && prev.from === e.to && now - prev.at <= 12) res.recaptures++;
+        if (e.from) lost.set(e.region, { from: e.from, at: now });
+      }
+    },
   };
 
   const aliveAtStart = new Set(FACTION_IDS.filter((f) => s.factions[f].alive));
@@ -142,6 +182,10 @@ export async function runHeadless(opt: RunOptions): Promise<RunResult> {
   }
   res.destroyed = {};
   for (const f of FACTION_IDS) if (aliveAtStart.has(f) && !s.factions[f].alive) res.destroyed[f] = destroyedYear(res.history, f, s.year);
+  for (const f of FACTION_IDS) {
+    const cause = s.factions[f].fallCause;
+    if (cause) res.falls[f] = cause;
+  }
   const v = victor(s);
   if (v) {
     res.winner = v;
