@@ -6,7 +6,7 @@ import type { FactionId, GameState } from "../engine/types";
 import { officerImg, regionImg } from "./assets";
 import { BattleMap } from "./battleMap";
 import { josa } from "./josa";
-import { MapView } from "./map";
+import { MapView, touchScreen } from "./map";
 import { buildScene } from "./scenes";
 
 type Pending =
@@ -242,7 +242,9 @@ export class UI implements IO {
   pickHex(prompt: string, allowed: number[], labels?: Record<number, string>, cancelLabel = "취소"): Promise<number | null> {
     return new Promise((resolve) => {
       if (!allowed.length) return resolve(null);
-      this.begin({ kind: "hex", allowed, resolve }, `${prompt} — 전장을 누르거나 칸 번호 입력`);
+      const touch = touchScreen();
+      this.battleMap.setPickable(allowed, touch);
+      this.begin({ kind: "hex", allowed, resolve }, `${prompt} — ${touch ? "전장을 눌러 고른 뒤 확정" : "전장을 누르거나 칸 번호 입력"}`);
       this.optionsEl.style.setProperty("--cols", "3");
       if (labels) {
         for (const id of allowed) {
@@ -418,6 +420,11 @@ export class UI implements IO {
     this.pending = null;
     this.end();
     if (p.kind === "region") this.renderMap();
+    if (p.kind === "hex") {
+      this.battleMap.setPickable([]);
+      this.battleMap.mark(null);
+      this.hexDraft = null;
+    }
     later(() => p.resolve(v));
   }
 
@@ -470,9 +477,19 @@ export class UI implements IO {
     this.inputEl.classList.add("bad");
   }
 
+  private hexDraft: number | null = null; // 터치 화면에서 확정을 기다리는 칸
+
   private onHexClick(id: number) {
     const p = this.pending;
-    if (p?.kind === "hex" && p.allowed.includes(id)) this.finish(id);
+    if (p?.kind !== "hex" || !p.allowed.includes(id)) return;
+    if (!touchScreen() || this.hexDraft === id) return this.finish(id);
+    // 터치 화면은 칸이 작아 잘못 누르기 쉽다: 고른 칸을 보여 주고 확정을 받는다
+    this.hexDraft = id;
+    this.battleMap.mark(id);
+    this.optionsEl.querySelector(".hex-ok")?.remove();
+    const ok = h("button", "btn opt hex-ok", `${id}번 칸으로 확정`);
+    ok.addEventListener("click", () => this.finish(id));
+    this.optionsEl.prepend(ok);
   }
 
   private onRegionClick(id: number) {

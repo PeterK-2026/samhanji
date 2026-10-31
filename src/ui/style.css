@@ -153,6 +153,8 @@ body {
   #app { height: auto; min-height: 100dvh; }
   .layout { grid-template-columns: 1fr; padding: 8px 16px; }
   .map-pane { height: 62vw; max-height: 70vh; }
+  .map-pane:has(#battle:not([hidden])) { height: 96vw; } /* 전장은 정사각형에 가까워 칸이 커진다 */
+  .btn.opt { min-height: 44px; align-items: center; }
   .console { min-height: 50vh; }
 }
 
@@ -303,6 +305,8 @@ body {
 /* ── 전투 연출 (battleMap.play) ── */
 #battle .fx { pointer-events: none; }
 #battle .fx * { transform-box: fill-box; transform-origin: center; }
+.hex-draft { fill: rgba(255, 224, 120, 0.35); stroke: #ffe078; stroke-width: 3; }
+.btn.hex-ok { grid-column: 1 / -1; justify-content: center; font-weight: 700; }
 .fx-dmg { font: 800 14px "Nanum Gothic", sans-serif; fill: #ff4b3a; stroke: #1b0d08; stroke-width: 3px; paint-order: stroke; text-anchor: middle; }
 .fx-dmg.small { font-size: 11px; fill: #ffb070; }
 .fx-plot { stroke: #f6d33c; stroke-width: 2.5; stroke-dasharray: 100; fill: none; filter: drop-shadow(0 0 3px rgba(246, 211, 60, 0.8)); }

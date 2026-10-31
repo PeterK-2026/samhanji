@@ -38,8 +38,46 @@ export class BattleMap {
   private last: BattleView | null = null;
   private missingField = new Set<number>(); // 그림이 없는 지역
   private missingTroop = new Set<string>();
+  private pickable: number[] = []; // 지금 고를 수 있는 칸
+  private reach = SIZE; // 눌린 곳에서 이 거리 안의 칸을 고른다
 
-  constructor(private svg: SVGSVGElement) {}
+  constructor(private svg: SVGSVGElement) {
+    svg.addEventListener("click", (e) => this.tap(e));
+  }
+
+  // 고를 수 있는 칸을 정한다. 터치 화면은 손가락이 칸을 조금 벗어나도 가장 가까운 칸을 고른다
+  setPickable(hexes: number[], touch = false) {
+    this.pickable = hexes;
+    this.reach = touch ? SIZE * 2 : SIZE;
+  }
+
+  private tap(e: MouseEvent) {
+    const v = this.last;
+    const m = this.svg.getScreenCTM();
+    if (!v || !m) return;
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
+    let best: number | null = null;
+    let bestD = this.reach;
+    for (const id of this.pickable) {
+      const [x, y] = hexCenter(v.hexes[id - 1].col, v.hexes[id - 1].row);
+      const d = Math.hypot(x - p.x, y - p.y);
+      if (d <= bestD) {
+        best = id;
+        bestD = d;
+      }
+    }
+    if (best) this.onClick(best);
+  }
+
+  // 터치 화면에서 확정을 기다리는 칸 표시
+  mark(hex: number | null) {
+    const layer = this.svg.querySelector<SVGGElement>(".fx");
+    layer?.querySelector(".hex-draft")?.remove();
+    const v = this.last;
+    if (!hex || !v || !layer) return;
+    const [cx, cy] = hexCenter(v.hexes[hex - 1].col, v.hexes[hex - 1].row);
+    layer.append(el("polygon", { points: corners(cx, cy, SIZE - 2), class: "hex-draft" }));
+  }
 
   render(v: BattleView) {
     this.last = v;
@@ -167,7 +205,6 @@ export class BattleMap {
       const num = el("text", { x: cx, y: cy + SIZE - 8, class: "hexnum" });
       num.textContent = String(h.id);
       g.append(num);
-      g.addEventListener("click", () => this.onClick(h.id));
       cells.append(g);
     }
     this.svg.append(cells, el("g", { class: "fires" }), el("g", { class: "units" }), el("g", { class: "fx" }));

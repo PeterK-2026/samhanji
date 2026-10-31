@@ -34,6 +34,9 @@ const pathOf = (pts: [number, number][]) =>
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
+// 손가락으로 조작하는 화면인가
+export const touchScreen = () => window.matchMedia("(max-width: 860px), (pointer: coarse)").matches;
+
 function el<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string | number>): SVGElementTagNameMap[K] {
   const e = document.createElementNS(SVG_NS, tag);
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v));
@@ -43,6 +46,7 @@ function el<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, 
 const HANJA: Record<string, string> = { goguryeo: "高句麗", baekje: "百濟", silla: "新羅", tang: "唐" };
 
 export class MapView {
+  private selectable?: number[];
   private nodes = new Map<number, SVGGElement>();
   private territory: SVGImageElement;
   private labels: SVGGElement;
@@ -50,7 +54,8 @@ export class MapView {
   private territoryKey = "";
   onClick: (id: number) => void = () => {};
 
-  constructor(svg: SVGSVGElement) {
+  constructor(private svg: SVGSVGElement) {
+    svg.addEventListener("click", (e) => this.tap(e));
     svg.setAttribute("viewBox", `0 0 ${MAP_W} ${MAP_H}`);
     svg.append(el("rect", { x: 0, y: 0, width: MAP_W, height: MAP_H, class: "sea" }));
     svg.append(el("path", { d: pathOf(COAST), class: "land" }));
@@ -104,7 +109,6 @@ export class MapView {
       const label = el("text", { y: 22, class: "label" });
       label.textContent = d.name;
       g.append(label);
-      g.addEventListener("click", () => this.onClick(d.id));
       g.addEventListener("keydown", (e) => {
         if ((e as KeyboardEvent).key === "Enter") {
           e.stopPropagation();
@@ -114,6 +118,26 @@ export class MapView {
       this.nodes.set(d.id, g);
       svg.append(g);
     }
+  }
+
+  // 지도 전체에서 클릭을 받아 가장 가까운 지역을 고른다. 휴대폰에서는 점이 작고 촘촘해 정확히 누르기 어렵다
+  private tap(e: MouseEvent) {
+    const m = this.svg.getScreenCTM();
+    if (!m) return;
+    const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
+    const pool = this.selectable?.length ? this.selectable : REGION_DEFS.map((d) => d.id);
+    let best: number | null = null;
+    let bestD = touchScreen() ? 60 : 18;
+    for (const id of pool) {
+      const d = REGION_DEFS[id - 1];
+      const [x, y] = project(d.lon, d.lat);
+      const dist = Math.hypot(x - p.x, y - p.y);
+      if (dist <= bestD) {
+        best = id;
+        bestD = dist;
+      }
+    }
+    if (best) this.onClick(best);
   }
 
   // 소유가 바뀔 때만 영역 그림을 다시 만든다
@@ -191,6 +215,7 @@ export class MapView {
   }
 
   render(s: GameState, focus?: number, selectable?: number[]) {
+    this.selectable = selectable;
     this.drawTerritory(s);
     for (const [id, g] of this.nodes) {
       const r = s.regions[id - 1];
