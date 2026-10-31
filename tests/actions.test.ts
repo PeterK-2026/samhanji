@@ -8,7 +8,7 @@ import { createGame, officersIn, readyOfficersIn, regionOf, rulerHere } from "..
 import type { FactionId, GameState } from "../src/engine/types";
 
 // choose·number를 차례로 답하는 IO. 장수 목록이 나오면 그 목록을 기록한다
-function scripted(answers: (number | null)[]) {
+function scripted(answers: (number | null)[], region: number | null = null) {
   const listed: string[][] = [];
   const said: string[] = [];
   const next = async () => (answers.length ? answers.shift()! : null);
@@ -27,7 +27,7 @@ function scripted(answers: (number | null)[]) {
     },
     number: next,
     confirm: async () => true,
-    pickRegion: async () => null,
+    pickRegion: async () => region,
     pickHex: async () => null,
   } as IO;
   return { io, listed, said };
@@ -79,9 +79,20 @@ describe("명령을 맡을 장수", () => {
     expect(said.join()).toContain("장수가 없습니다");
   });
 
-  it("정보도 장수의 행동을 쓴다", async () => {
+  it("정보: 우리 정보는 장수를 고르지 않는다", async () => {
     const { s, f, rid } = setup(2, false);
-    const { io } = scripted([3, 1]);
+    for (const sub of [1, 2, 3, 4]) {
+      const { io, listed } = scripted([sub, 1], rid);
+      expect(await runCommand(ctx(s, io, rid, f), 8, async () => "continue")).toBe(false);
+      expect(listed.flat()).toHaveLength(sub === 2 ? officersIn(s, rid).length : 0); // 2는 볼 장수를 고르는 목록
+    }
+    expect(readyOfficersIn(s, rid)).toHaveLength(officersIn(s, rid).length);
+  });
+
+  it("정보: 남의 지역을 보려면 장수의 행동을 쓴다", async () => {
+    const { s, f, rid } = setup(2, false);
+    const foe = s.regions.find((x) => x.owner && x.owner !== f)!;
+    const { io } = scripted([1, 1], foe.id);
     expect(await runCommand(ctx(s, io, rid, f), 8, async () => "continue")).toBe(true);
     expect(officersIn(s, rid).filter((o) => o.acted)).toHaveLength(1);
   });

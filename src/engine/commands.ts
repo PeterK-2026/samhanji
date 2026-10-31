@@ -20,7 +20,7 @@ export interface Ctx {
 export const COMMANDS: { no: number; name: string; free?: boolean }[] = [
   { no: 0, name: "휴식" }, { no: 1, name: "이동" }, { no: 2, name: "수송" }, { no: 3, name: "전쟁" },
   { no: 4, name: "군사" }, { no: 5, name: "인재" }, { no: 6, name: "외교" }, { no: 7, name: "첩보" },
-  { no: 8, name: "정보" }, { no: 9, name: "개간" }, { no: 10, name: "치수" }, { no: 11, name: "포상" },
+  { no: 8, name: "정보", free: true }, { no: 9, name: "개간" }, { no: 10, name: "치수" }, { no: 11, name: "포상" },
   { no: 12, name: "시혜" }, { no: 13, name: "상인" }, { no: 14, name: "세율", free: true }, { no: 15, name: "세력", free: true },
   { no: 16, name: "위임", free: true }, { no: 17, name: "추방", free: true }, { no: 18, name: "조언", free: true }, { no: 19, name: "기타", free: true },
 ];
@@ -386,16 +386,18 @@ async function cmdView(c: Ctx): Promise<boolean> {
   const sub = await c.io.choose("무엇을 봅니까?", [
     { value: 1, label: "다른 지역" }, { value: 2, label: "장수" }, { value: 3, label: "우리 장수 일람" }, { value: 4, label: "재야 인재" },
   ], { cancel: true });
-  if (!sub) return false;
-  if (!(await pickActor(c, "누가 알아봅니까?"))) return false;
   if (sub === 1) {
     const t = await c.io.pickRegion("어느 지역을 봅니까?", c.s.regions.map((r) => r.id));
     if (!t) return false;
+    // 우리 땅은 그냥 볼 수 있고, 남의 땅은 장수를 보내 알아본다
+    if (regionOf(c.s, t).owner === c.f) return showRegion(c, t, false), false;
+    if (!(await pickActor(c, "누가 알아봅니까?"))) return false;
     showRegion(c, t, false);
-  } else if (sub === 2) {
+    return true;
+  }
+  if (sub === 2) {
     const o = await pickOfficer(c, "누구를 봅니까?", officersIn(c.s, c.rid));
-    if (!o) return false;
-    showOfficerCard(c, o);
+    if (o) showOfficerCard(c, o);
   } else if (sub === 3) {
     c.io.table(
       factionOfficers(c.s, c.f).map((o) => [o.name, regionOf(c.s, o.region).name, o.int, o.war, o.chr, o.loy, o.men]),
@@ -406,7 +408,7 @@ async function cmdView(c: Ctx): Promise<boolean> {
     if (!list.length) c.io.say("이 지역에서 알려진 재야 인재가 없습니다. (인재→탐색)");
     for (const o of list) c.io.say(officerLine(c.s, o));
   }
-  return true;
+  return false;
 }
 
 // ── 9 개간 / 10 치수 ──
