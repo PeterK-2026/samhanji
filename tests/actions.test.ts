@@ -4,7 +4,8 @@ import { seedRandom } from "../src/dev/seed";
 import { aiAct } from "../src/engine/ai";
 import { runCommand, type Ctx } from "../src/engine/commands";
 import type { IO, Option } from "../src/engine/io";
-import { createGame, officersIn, readyOfficersIn, regionOf, rulerHere } from "../src/engine/state";
+import { MAX_GOLD } from "../src/engine/economy";
+import { adjacent, createGame, officersIn, readyOfficersIn, regionOf, rulerHere } from "../src/engine/state";
 import type { FactionId, GameState } from "../src/engine/types";
 
 // choose·number를 차례로 답하는 IO. 장수 목록이 나오면 그 목록을 기록한다
@@ -107,6 +108,34 @@ describe("명령을 맡을 장수", () => {
     expect(offs[0].acted).toBe(true);
     expect(offs[1].acted).toBeFalsy();
     expect(offs[1].men).toBe(100);
+  });
+});
+
+describe("취소와 창고 한도", () => {
+  it("이간 대상을 고르다 취소하면 금과 행동을 쓰지 않는다", async () => {
+    const { s, f, rid } = setup(1, false);
+    const r = regionOf(s, rid);
+    const foe = adjacent(rid).find((n) => { const o = regionOf(s, n).owner; return o && o !== f; });
+    if (!foe) throw new Error("맞닿은 적 지역이 없음");
+    const { io } = scripted([2, 1, null], foe);
+    const gold = r.gold;
+    expect(await runCommand(ctx(s, io, rid, f), 7, async () => "continue")).toBe(false);
+    expect(r.gold).toBe(gold);
+    expect(readyOfficersIn(s, rid)).toHaveLength(officersIn(s, rid).length);
+  });
+
+  it("군량을 팔아도 금 한도를 넘지 않는다", async () => {
+    const { s, f, rid } = setup(1, false);
+    const r = regionOf(s, rid);
+    r.gold = MAX_GOLD - 9;
+    r.food = 5000;
+    s.foodPrice = 10;
+    let asked = 0;
+    const { io } = scripted([2, 1, 99999]);
+    const number = io.number;
+    io.number = (p, min, max, def) => ((asked = max), number(p, min, max, def));
+    await runCommand(ctx(s, io, rid, f), 13, async () => "continue");
+    expect(asked).toBe(100);
   });
 });
 

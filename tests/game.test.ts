@@ -27,5 +27,7 @@ describe("몽키 테스트: 플레이어 선택을 무작위로", () => {
   it.each(cases)("시나리오 %i %s 시드 %i: 3년 진행", async (scenario, f, seed) => {
     const r = await runHeadless({ scenario, years: 3, seed, players: [f], monkey: true });
     expect(problems(r)).toBe("");
+    // 나라가 망하지 않았다면 정해진 기간을 끝까지 진행한다
+    if (r.final[f].alive) expect(r.months).toBeGreaterThanOrEqual(36);
   });
 });

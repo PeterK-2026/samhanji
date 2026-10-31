@@ -314,7 +314,7 @@ export class Battle {
 
   // 2. 동시 공격: 대상에 붙은 아군 부대가 모두 함께 친다. 공격 수만큼 각자의 손실이 준다 (원작 35fd:00a2)
   allies(t: Unit, side: Side): Unit[] {
-    return this.up(side).filter((x) => dist(x.hex, t.hex) === 1);
+    return this.up(side).filter((x) => !x.done && dist(x.hex, t.hex) === 1);
   }
 
   async simultaneous(a: Unit, t: Unit) {
@@ -451,8 +451,15 @@ export class Battle {
     this.log(`불길이 ${u.o.name}의 부대를 덮쳤다! ${before - u.o.men}명 손실.`);
   }
 
+  // 이간할 수 있는 적: 총대장·군주·수비군은 돌아서지 않는다
+  canPlot(t: Unit): boolean {
+    const foe = this.sideOf(t);
+    return t !== foe.commander && t.o.id !== "__militia" && !(foe.faction && this.s.factions[foe.faction].ruler === t.o.id);
+  }
+
   // 이간: 금 100으로 적 장수를 매수해 아군으로 돌린다 (원작 Gold 사용 추정)
   async plot(a: Unit, t: Unit) {
+    if (!this.canPlot(t)) return;
     const side = this.sideOf(a);
     side.gold -= 100;
     const p = clamp((100 - t.o.loy) / 120 + (a.o.int - t.o.int) / 200 + 0.03, 0.03, 0.7);
@@ -619,7 +626,7 @@ export class Battle {
   async aiStrike(u: Unit) {
     const side = this.sideOf(u);
     const adj = this.enemiesWithin(u, 1);
-    const plotTarget = this.enemiesWithin(u, 4).find((e) => e !== this.other(side).commander && e.o.loy < 60 && e.o.id !== "__militia");
+    const plotTarget = this.enemiesWithin(u, 4).find((e) => this.canPlot(e) && e.o.loy < 60);
     if (plotTarget && side.gold >= 100 && u.o.int >= 75 && chance(0.2)) return this.plot(u, plotTarget);
     if (!adj.length) return;
     const t = adj.reduce((b, e) => (e.o.men < b.o.men ? e : b));
@@ -704,7 +711,7 @@ export class Battle {
     const units = this.up(side).filter((x) => !x.done);
     for (const u of units) {
       if (this.checkEnd()) return;
-      if (!isUp(u)) continue;
+      if (!isUp(u) || u.done) continue;
       await this.commandUnit(u);
       u.done = true;
       this.render();
@@ -794,7 +801,7 @@ export class Battle {
 
   async strategy(u: Unit): Promise<boolean> {
     const side = this.sideOf(u);
-    const plotPool = this.enemiesWithin(u, 4).filter((e) => e !== this.other(side).commander && e.o.id !== "__militia");
+    const plotPool = this.enemiesWithin(u, 4).filter((e) => this.canPlot(e));
     const duelPool = this.enemiesWithin(u, 1).filter((e) => e.o.id !== "__militia");
     const opts: Option[] = [];
     if (plotPool.length && side.gold >= 100) opts.push({ value: 1, label: "이간 (금 100)" });
@@ -885,6 +892,7 @@ export class Battle {
   save(months: number, arrivals: Arrival[] = []): OngoingBattle {
     const side = (sd: Side): SavedSide => ({
       faction: sd.faction,
+      player: sd.player,
       units: sd.units.filter(isUp).map((u) => ({ id: u.o.id, faction: u.faction, hex: u.hex, home: u.home, men: u.o.id === "__militia" ? u.o.men : undefined })),
       reserve: sd.reserve.filter((o) => o.alive).map((o) => o.id),
       commander: sd.commander && isUp(sd.commander) ? sd.commander.o.id : null,
@@ -905,6 +913,7 @@ export class Battle {
     b.wind = ob.wind;
     b.fires = new Map(ob.fires);
     for (const [side, saved] of [[b.atk, ob.atk], [b.def, ob.def]] as const) {
+      side.player = saved.player ?? side.player; // "끝까지 맡김"은 달이 바뀌어도 유지된다
       for (const su of saved.units) {
         const o = su.id === "__militia" ? { ...makeMilitia(b.target), men: su.men ?? 0 } : s.officers[su.id];
         if (!o || !o.alive || o.men <= 0) continue;

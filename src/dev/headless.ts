@@ -112,8 +112,9 @@ export async function runHeadless(opt: RunOptions): Promise<RunResult> {
       if (!monkey) return min;
       return Math.random() < 0.3 ? max : min + rnd(max - min + 1);
     },
-    confirm: async () => {
+    confirm: async (p) => {
       tick();
+      if (p.includes("타이틀로")) return false; // 몽키가 게임을 스스로 끝내면 진행을 시험하지 못한다
       return monkey ? Math.random() < 0.6 : true;
     },
     pickRegion: async (_p, a) => {

@@ -86,8 +86,8 @@ async function cmdMove(c: Ctx): Promise<boolean> {
   const r = owned(c);
   const dest = regionOf(c.s, to);
   // 받는 지역의 창고 한도를 넘지 않게 한다
-  const gMax = Math.min(r.gold, MAX_GOLD - dest.gold);
-  const fMax = Math.min(r.food, MAX_FOOD - dest.food);
+  const gMax = Math.max(0, Math.min(r.gold, MAX_GOLD - dest.gold));
+  const fMax = Math.max(0, Math.min(r.food, MAX_FOOD - dest.food));
   const gold = (await c.io.number(`가져갈 금 (0~${gMax})`, 0, gMax, 0)) ?? 0;
   const food = (await c.io.number(`가져갈 군량 (0~${fMax})`, 0, fMax, 0)) ?? 0;
   r.gold -= gold; r.food -= food; dest.gold += gold; dest.food += food;
@@ -106,8 +106,8 @@ async function cmdSend(c: Ctx): Promise<boolean> {
   if (!to) return false;
   const r = owned(c);
   const dest = regionOf(c.s, to);
-  const gMax = Math.min(r.gold, MAX_GOLD - dest.gold);
-  const fMax = Math.min(r.food, MAX_FOOD - dest.food);
+  const gMax = Math.max(0, Math.min(r.gold, MAX_GOLD - dest.gold));
+  const fMax = Math.max(0, Math.min(r.food, MAX_FOOD - dest.food));
   const gold = (await c.io.number(`보낼 금 (0~${gMax})`, 0, gMax, 0)) ?? 0;
   const food = (await c.io.number(`보낼 군량 (0~${fMax})`, 0, fMax, 0)) ?? 0;
   if (!gold && !food) return false;
@@ -341,9 +341,9 @@ async function cmdSpy(c: Ctx): Promise<boolean> {
   const enemyRegions = c.s.regions.filter((x) => x.owner && x.owner !== c.f).map((x) => x.id);
   const t = await c.io.pickRegion("대상 지역을 고르십시오", sub === 1 ? enemyRegions : enemyRegions.filter((id) => adjacent(c.rid).includes(id) || id === c.rid));
   if (!t) return false;
-  r.gold -= cost;
   const tr = regionOf(c.s, t);
   if (sub === 1) {
+    r.gold -= cost;
     tr.spiedBy.push(c.f);
     showRegion(c, t, true);
     return true;
@@ -353,13 +353,15 @@ async function cmdSpy(c: Ctx): Promise<boolean> {
   const p = clamp(0.4 + (spy.int - (target?.int ?? 40)) / 100, 0.1, 0.85);
   if (sub === 2) {
     const victim = await pickOfficer(c, "누구를 이간합니까?", foes.filter((o) => tr.owner && c.s.factions[tr.owner].ruler !== o.id));
-    if (!victim) return true;
+    if (!victim) return false;
+    r.gold -= cost;
     if (chance(p)) {
       victim.loy = Math.max(0, victim.loy - rand(10, 20));
       c.io.say(`${spy.name}의 이간책이 통했습니다. ${victim.name}의 충성이 ${victim.loy}(으)로 떨어졌습니다.`);
     } else c.io.say(`${spy.name}의 이간책이 실패했습니다.`);
     return true;
   }
+  r.gold -= cost;
   if (chance(p)) {
     tr.loyalty = clamp(tr.loyalty - rand(8, 15), 0, 100);
     c.io.say(`${tr.name}에 유언비어가 퍼져 민심이 ${tr.loyalty}(으)로 떨어졌습니다.`);
@@ -467,7 +469,8 @@ async function cmdMerchant(c: Ctx): Promise<boolean> {
     if (!n) return false;
     r.gold -= Math.ceil((n * p) / 100); r.food += n;
   } else if (sub === 2) {
-    const n = await c.io.number(`몇 석을 팝니까? (최대 ${r.food})`, 0, r.food, 0);
+    const max = Math.max(0, Math.min(r.food, Math.floor(((MAX_GOLD - r.gold) * 100) / (p * 0.9))));
+    const n = await c.io.number(`몇 석을 팝니까? (최대 ${max})`, 0, max, 0);
     if (!n) return false;
     r.food -= n; r.gold += Math.floor((n * p * 0.9) / 100);
   } else if (sub === 3) {

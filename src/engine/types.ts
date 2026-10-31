@@ -81,6 +81,7 @@ export interface SavedUnit {
 
 export interface SavedSide {
   faction: FactionId | null;
+  player?: boolean; // 플레이어가 직접 지휘하는가. 예전 저장에는 없다
   units: SavedUnit[];
   reserve: string[];
   commander: string | null;
