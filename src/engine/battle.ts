@@ -1057,8 +1057,8 @@ async function fight(s: GameState, io: IO, b: Battle, months: number): Promise<b
     return won;
   }
   // 승부가 나지 않았다: 수비측 창고를 지역에 돌려놓고 다음 달로
-  b.target.food = b.def.food;
-  b.target.gold = b.def.gold;
+  b.target.food = Math.min(MAX_FOOD, b.def.food);
+  b.target.gold = Math.min(MAX_GOLD, b.def.gold);
   (s.battles ??= []).push(b.save(months));
   syncFlags(s);
   if (b.watch) {
@@ -1128,9 +1128,9 @@ async function resolve(s: GameState, io: IO, b: Battle): Promise<boolean> {
       u.o.region = u.home;
     }
   }
-  // 수비측 군량·금은 지역 창고에서 썼다
-  target.food = b.def.food;
-  target.gold = b.def.gold;
+  // 수비측 군량·금은 지역 창고에서 썼다 (원군이 가져온 몫 포함, 창고 한도까지)
+  target.food = Math.min(MAX_FOOD, b.def.food);
+  target.gold = Math.min(MAX_GOLD, b.def.gold);
 
   const captives = [...winner.captives];
   // 진 쪽이 잡은 포로는 혼란 중에 풀려난다
@@ -1177,6 +1177,10 @@ async function resolve(s: GameState, io: IO, b: Battle): Promise<boolean> {
 
   const uniq = [...new Set(captives)].filter((c) => c.alive && c.id !== "__militia");
   if (uniq.length && winner.faction) await handleCaptives(s, io, winner, loser, uniq, targetId, log); // 이긴 쪽은 어느 경우든 목표 지역에 있다
+  // 마지막 정리: 풀려난 포로 등 자기 나라 땅이 아닌 곳에 남은 장수는 집이나 수도로 돌아간다
+  for (const o of [...b.involved(), ...b.atk.captives, ...b.def.captives]) {
+    if (o.alive && o.faction && o.id !== "__militia" && regionOf(s, o.region).owner !== o.faction) o.region = homeOf(s, o, o.region);
+  }
   for (const t of checkFactions(s)) io.say(t);
   if (b.watch) {
     b.render();
