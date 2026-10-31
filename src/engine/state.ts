@@ -184,6 +184,14 @@ export const regionOf = (s: GameState, id: number) => s.regions[id - 1];
 // 전투 중(inBattle)인 장수는 빼고 센다
 export const officersIn = (s: GameState, rid: number) =>
   Object.values(s.officers).filter((o) => o.alive && !o.inBattle && o.region === rid && o.faction !== null && o.faction === regionOf(s, rid).owner);
+// 태수: 군주가 있으면 군주(직할), 아니면 매력·지력·무력 합이 가장 높은 장수 [설계]
+export function governorOf(s: GameState, rid: number): Officer | undefined {
+  const offs = officersIn(s, rid);
+  const owner = regionOf(s, rid).owner;
+  const ruler = owner ? s.factions[owner].ruler : null;
+  return offs.find((o) => o.id === ruler)
+    ?? [...offs].sort((a, b) => b.chr + b.int + b.war - (a.chr + a.int + a.war) || a.id.localeCompare(b.id))[0];
+}
 export const battleAt = (s: GameState, rid: number) => s.battles?.find((b) => b.target === rid);
 export const freeOfficersIn = (s: GameState, rid: number) =>
   Object.values(s.officers).filter((o) => o.alive && o.region === rid && o.faction === null);

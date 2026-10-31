@@ -316,3 +316,8 @@ body {
 .siege-ring { fill: none; stroke: #c8202e; stroke-width: 2.5; animation: siege-pulse 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .siege-swords { stroke: #c8202e; stroke-width: 3; stroke-linecap: round; paint-order: stroke; filter: drop-shadow(0 0 1.5px #fff); }
 @keyframes siege-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.25); } }
+
+/* 태수 표시 */
+.info-meta .gov { font-weight: 700; color: var(--accent); }
+.banner-cap { position: absolute; right: 72px; bottom: 8px; font-size: 11px; font-weight: 700; color: #fff4c2; background: rgba(16, 12, 8, 0.72); padding: 1px 6px; border-radius: 2px; }
+.chip-o.gov { outline: 2px solid var(--accent); font-weight: 700; }

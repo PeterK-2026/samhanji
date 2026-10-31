@@ -5,7 +5,7 @@ import { COMMANDS, runCommand, type Ctx } from "./commands";
 import { monthStart } from "./economy";
 import type { IO } from "./io";
 import { playerAlive, regionLabel, victor } from "./politics";
-import { officersIn, regionOf, seasonName, shuffle } from "./state";
+import { governorOf, officersIn, regionOf, seasonName, shuffle } from "./state";
 import type { GameState } from "./types";
 
 export type RunResult = { kind: "title" } | { kind: "load"; state: GameState };
@@ -107,15 +107,17 @@ export class Game {
     const ctx: Ctx = { s, io: this.io, rid, f };
     this.io.clear();
     this.io.refresh(rid);
-    const rulerId = s.factions[f].ruler;
-    const ruler = rulerId ? s.officers[rulerId].name : s.factions[f].name;
     // 장수가 없는 지역은 명령을 내릴 수 없으므로 건너뛴다 (모두 전장에 나가 있거나 포위된 경우 포함)
     if (officersIn(s, rid).length === 0) return "done";
+    const gov = governorOf(s, rid)!;
+    const direct = gov.id === s.factions[f].ruler;
+    const govLabel = `${direct ? "군주 직할" : "태수"} ${gov.name}`;
+    this.io.say(`【${regionLabel(s, rid)}】 ${govLabel} · 장수 ${officersIn(s, rid).length}명`);
     for (;;) {
       this.io.refresh(rid);
       this.io.scene?.("menu");
       const no = await this.io.choose(
-        `${ruler}님, ${regionLabel(s, rid)}의 명령은? (0~19)`,
+        `${regionLabel(s, rid)} — ${govLabel}, 명령은? (0~19)`,
         COMMANDS.map((c) => ({ value: c.no, label: c.name })),
         { columns: 4 },
       );

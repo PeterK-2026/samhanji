@@ -1,7 +1,7 @@
 import { regionDef } from "../data/regions";
 import { FACTION_INFO } from "../data/scenarios";
 import type { BattleFx, BattleView, IO, Option } from "../engine/io";
-import { freeOfficersIn, menIn, officersIn, seasonName } from "../engine/state";
+import { freeOfficersIn, governorOf, menIn, officersIn, seasonName } from "../engine/state";
 import type { FactionId, GameState } from "../engine/types";
 import { officerImg, regionImg } from "./assets";
 import { BattleMap } from "./battleMap";
@@ -327,7 +327,9 @@ export class UI implements IO {
     const title = h("div", "info-title");
     title.append(h("div", "rname", `${r.id}. ${r.name}`), h("div", "rhanja", d.hanja));
     const meta = h("div", "info-meta");
-    meta.append(h("div", undefined, `세력 ${owner?.name ?? "공백지"}`), h("div", undefined, `군주 ${ruler}`));
+    const gov = governorOf(s, r.id);
+    const govText = !gov ? "—" : known || r.owner === viewer ? `${gov.name}${gov.id === owner?.ruler ? " (직할)" : ""}` : "?";
+    meta.append(h("div", undefined, `세력 ${owner?.name ?? "공백지"}`), h("div", undefined, `군주 ${ruler}`), h("div", "gov", `태수 ${govText}`));
     if (r.delegated) meta.append(h("div", "tag", "위임 중"));
     head.append(seal, title, meta);
 
@@ -346,13 +348,18 @@ export class UI implements IO {
     }
     const banner = h("div", "banner");
     banner.append(img(regionImg(r.id), "banner-img", r.name));
-    if (owner?.ruler && s.officers[owner.ruler]) banner.append(img(officerImg(owner.ruler), "banner-ruler", ruler));
+    // 배너 초상: 태수를 알 수 있으면 태수, 아니면 군주
+    const face = gov && (known || r.owner === viewer) ? gov : owner?.ruler ? s.officers[owner.ruler] : undefined;
+    if (face) {
+      banner.append(img(officerImg(face.id), "banner-ruler", face.name));
+      banner.append(h("span", "banner-cap", face === gov ? `태수 ${face.name}` : `군주 ${face.name}`));
+    }
     this.infoEl.append(banner, head, grid);
     if (offs.length && (known || r.owner === viewer)) {
       const chips = h("div", "chips");
-      for (const o of offs) {
-        const chip = h("span", "chip-o");
-        chip.append(img(officerImg(o.id), "chip-img"), h("span", undefined, `${o.name} ${o.men.toLocaleString("ko-KR")}`));
+      for (const o of [...offs].sort((a, b) => (a === gov ? -1 : b === gov ? 1 : 0))) {
+        const chip = h("span", o === gov ? "chip-o gov" : "chip-o");
+        chip.append(img(officerImg(o.id), "chip-img"), h("span", undefined, `${o === gov ? "태수 " : ""}${o.name} ${o.men.toLocaleString("ko-KR")}`));
         chips.append(chip);
       }
       this.infoEl.append(chips);

@@ -4,7 +4,7 @@
 import { regionDef, REGION_DEFS } from "../data/regions";
 import { FACTION_INFO } from "../data/scenarios";
 import type { BattleView } from "../engine/io";
-import { adjacent, connectedOwn, freeOfficersIn, menCap, menIn, officersIn, regionOf, relation } from "../engine/state";
+import { adjacent, connectedOwn, freeOfficersIn, governorOf, menCap, menIn, officersIn, regionOf, relation } from "../engine/state";
 import { FACTION_IDS, type FactionId, type GameState, type Officer } from "../engine/types";
 import { battlefieldImg, officerImg, regionImg, strategicMapImg } from "./assets";
 import { MAP_H, MAP_W, project } from "./map";
@@ -406,9 +406,19 @@ const SCENES: Record<string, Builder> = {
   menu: (id, c) => {
     const { rid, r, f, offs } = regionCtx(c);
     const ruler = f ? c.s.factions[f].ruler : null;
-    return [cutout(id, photo(regionImg(rid))),
+    const gov = governorOf(c.s, rid);
+    const direct = !!gov && gov.id === ruler;
+    // 태수 초상을 지역 그림 위에 핀으로 꽂는다
+    const pin = gov && g({ transform: "translate(282 150) rotate(5 46 60)" },
+      g({ class: "v-in", ...delay(0.5) },
+        g({ filter: `url(#${id}-shadow)` },
+          s("rect", { x: 0, y: 0, width: 92, height: 120, fill: CARD }),
+          s("image", { href: officerImg(gov.id), x: 6, y: 6, width: 80, height: 88, preserveAspectRatio: "xMidYMid slice" }),
+          t(46, 110, `${direct ? "직할" : "태수"} ${gov.name}`, "v-polaroid", { "text-anchor": "middle", "font-size": 11 })),
+        s("circle", { cx: 46, cy: 4, r: 5, fill: RED })));
+    return [cutout(id, photo(regionImg(rid))), pin,
       ...headline(`${c.s.year}년 ${c.s.month}월 · ${SEASON[seasonIdx(c.s.month)].ko}`, r.name, regionDef(rid).hanja,
-        `${f ? c.s.factions[f].name : "공백지"}${ruler ? ` · 군주 ${c.s.officers[ruler].name}` : ""} · 장수 ${offs.length}명`),
+        `${gov ? `${direct ? "군주 직할" : "태수"} ${gov.name}` : "태수 없음"}${ruler && !direct ? ` · 군주 ${c.s.officers[ruler].name}` : ""} · 장수 ${offs.length}명`),
       stats([["병사", fmt(menIn(c.s, rid))], ["금", fmt(r.gold)], ["군량", fmt(r.food)], ["민심", String(r.loyalty)]])];
   },
   season: (id, c) => {
