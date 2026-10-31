@@ -23,7 +23,7 @@ npm run dev
 ```bash
 npm test                      # Vitest 전체 (약 10초)
 npm run test:watch            # 파일을 고칠 때마다 다시 실행
-npm run eval -- 20 40         # 시나리오마다 20판 × 40년 AI 대전 → reports/eval-latest.md
+npm run eval -- 20 60         # 시나리오마다 20판, 최대 60년 AI 대전 → reports/eval-latest.md
 npm run eval -- 5 20 3        # 시나리오 3만 5판 × 20년
 ```
 
@@ -186,6 +186,12 @@ npm run images:optimize   # 원본 PNG → public/img/*.webp (초상화 256px, �
 - 숫자 키로 고른 뒤 Enter. 다른 선택지와 겹치지 않는 번호는 Enter 없이 바로 결정됩니다.
 - 지역을 고를 때는 지도를 눌러도 됩니다. Y/N, Esc(취소)를 쓸 수 있고, 버튼으로도 모두 조작할 수 있습니다.
 - 저장은 브라우저 localStorage에 5칸까지 할 수 있습니다.
+
+### 시대의 끝
+
+게임은 삼한 통일, 내 나라의 멸망, 모든 나라의 소멸, 또는 700년 1월에 끝납니다 [설계]. 실존 인물 명단이 680년대부터 급격히 줄어 700년이면
+거의 남지 않으므로, 그때까지 통일되지 않으면 삼한 땅을 가장 많이 가진 세력이 판정승합니다 (`ERA_END`, `judge`).
+군주가 죽었는데 신하가 한 명도 없으면 영토 안의 재야 인물을 추대하고, 그마저 없으면 나라가 망합니다.
 
 ### 경제·전투 규칙 요약
 

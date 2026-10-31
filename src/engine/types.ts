@@ -66,6 +66,7 @@ export interface GameState {
   alliances: string[]; // "a|b"
   queue: number[]; // 이번 달 남은 지역 순서
   foodPrice: number; // 100석당 금
+  judged?: FactionId; // 시대의 끝에 가장 앞선 세력
   battles?: OngoingBattle[]; // 달을 넘겨 이어지는 전투. 예전 저장에는 없다
   lastWar?: Partial<Record<FactionId, number>>; // AI가 마지막으로 출병한 때 (year*12+month). 예전 저장에는 없다
   over: boolean;

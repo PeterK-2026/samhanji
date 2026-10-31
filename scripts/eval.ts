@@ -1,5 +1,5 @@
 // 밸런스 평가: 시나리오마다 시드를 바꿔 AI끼리 여러 판 돌리고 결과를 보고서로 남긴다.
-// 사용법: npm run eval -- [판 수=20] [연수=40] [시나리오=1,2,3,4]
+// 사용법: npm run eval -- [판 수=20] [연수=60] [시나리오=1,2,3,4]  (게임은 늦어도 시대의 끝인 700년에 끝난다)
 // 결과: reports/eval-latest.md (사람이 읽는 보고서), reports/eval-latest.json (원자료)
 import { mkdirSync, writeFileSync } from "node:fs";
 import { runHeadless, type RunResult } from "../src/dev/headless";
@@ -8,7 +8,7 @@ import { FACTION_IDS, type FactionId } from "../src/engine/types";
 import { josa } from "../src/ui/josa";
 
 const runs = Number(process.argv[2] ?? 20);
-const years = Number(process.argv[3] ?? 40);
+const years = Number(process.argv[3] ?? 60);
 const only = (process.argv[4] ?? "1,2,3,4").split(",").map(Number);
 
 const name = (f: FactionId) => FACTION_INFO[f].name;
@@ -32,6 +32,7 @@ interface Summary {
   violations: number;
   unified: number;
   winners: Partial<Record<FactionId, number>>;
+  judged: Partial<Record<FactionId, number>>; // 시대의 끝 판정
   medianWinYears: number; // 통일까지 걸린 햇수 (중앙값)
   survival: Partial<Record<FactionId, number>>; // 끝까지 살아남은 비율
   avgRegions: Partial<Record<FactionId, number>>;
@@ -54,6 +55,8 @@ function summarize(sc: (typeof SCENARIOS)[number], rs: RunResult[]): Summary {
   const done = rs.filter((r) => !r.error);
   const winners: Summary["winners"] = {};
   for (const r of done) if (r.winner) winners[r.winner] = (winners[r.winner] ?? 0) + 1;
+  const judged: Summary["judged"] = {};
+  for (const r of done) if (r.judged) judged[r.judged] = (judged[r.judged] ?? 0) + 1;
   const survival: Summary["survival"] = {};
   const avgRegions: Summary["avgRegions"] = {};
   for (const f of present) {
@@ -78,7 +81,7 @@ function summarize(sc: (typeof SCENARIOS)[number], rs: RunResult[]): Summary {
     errors: rs.filter((r) => r.error).length,
     violations: rs.filter((r) => r.violations.length).length,
     unified: done.filter((r) => r.winner).length,
-    winners,
+    winners, judged,
     medianWinYears: median(done.filter((r) => r.winYear).map((r) => r.winYear! - r.startYear)),
     survival, avgRegions,
     warsPerYear: years.reduce((a, y) => a + y.wars, 0) / nYears,
@@ -118,12 +121,13 @@ function markdown(sums: Summary[], all: RunResult[][]): string {
   L.push(`- 조건: 시나리오마다 ${runs}판 × 최대 ${years}년, AI끼리, 난이도 중급, 역사 모드, 시드 1~${runs}`);
   L.push(`- 재현: \`npm run eval -- ${runs} ${years} ${only.join(",")}\` (같은 시드면 같은 결과)`, "");
   L.push("## 요약", "");
-  L.push("| 시나리오 | 통일 | 통일 세력 | 통일까지(중앙값) | 전멸 판 | 오류 | 위반 |");
-  L.push("|---|---|---|---|---|---|---|");
+  L.push("| 시나리오 | 통일 | 통일 세력 | 통일까지(중앙값) | 판정 | 전멸 판 | 오류 | 위반 |");
+  L.push("|---|---|---|---|---|---|---|---|");
   for (const s of sums) {
     const win = Object.entries(s.winners).sort((a, b) => b[1] - a[1]).map(([f, n]) => `${name(f as FactionId)} ${n}`).join(", ") || "-";
     const n = s.runs - s.errors;
-    L.push(`| ${s.scenario}. ${s.title} (${s.year}) | ${pct(s.unified, n)} ${moe(s.unified / (n || 1), n)} | ${win} | ${f1(s.medianWinYears)}년 | ${s.extinct} | ${s.errors} | ${s.violations} |`);
+    const judged = Object.entries(s.judged).sort((a, b) => b[1] - a[1]).map(([f, c]) => `${name(f as FactionId)} ${c}`).join(", ") || "-";
+    L.push(`| ${s.scenario}. ${s.title} (${s.year}) | ${pct(s.unified, n)} ${moe(s.unified / (n || 1), n)} | ${win} | ${f1(s.medianWinYears)}년 | ${judged} | ${s.extinct} | ${s.errors} | ${s.violations} |`);
   }
   L.push("");
   L.push("### 전쟁 지표", "");
@@ -154,7 +158,7 @@ function markdown(sums: Summary[], all: RunResult[][]): string {
     L.push("| 시드 | 결과 | 종료 | 점령 | 멸망 |");
     L.push("|---|---|---|---|---|");
     for (const r of all[i]) {
-      const res = r.error ? "오류" : r.winner ? `${name(r.winner)} 통일` : "미결";
+      const res = r.error ? "오류" : r.winner ? `${name(r.winner)} 통일` : r.judged ? `${name(r.judged)} 판정` : r.extinctYear ? "전멸" : "미결";
       const fall = Object.entries(r.destroyed).map(([f, y]) => `${name(f as FactionId)} ${y}`).join(", ") || "-";
       L.push(`| ${r.seed} | ${res} | ${r.endYear}.${r.endMonth} | ${r.captures} | ${fall} |`);
     }
@@ -163,6 +167,7 @@ function markdown(sums: Summary[], all: RunResult[][]): string {
   L.push("## 읽는 법", "");
   L.push("- **통일**: 한반도·요동 지역(korea 표시)을 한 세력이 모두 차지한 판의 비율.");
   L.push("- **±**: 비율의 95% 신뢰구간 폭(퍼센트포인트). 두 보고서의 차이가 이보다 작으면 우연일 수 있다.");
+  L.push("- **판정**: 700년까지 통일되지 않아 삼한 땅을 가장 많이 가진 세력으로 끝난 판.");
   L.push("- **전멸 판**: 모든 세력이 사라진 판 수. 아래 연간 지표는 승부가 났거나 전멸한 뒤의 해를 뺀다.");
   L.push("- **연간 출병·점령**: 사건을 직접 센 값. 같은 달의 재점령도 빠지지 않는다.");
   L.push("- **탈환 비율**: 점령 중 12개월 안에 빼앗겼던 땅을 되찾은 비율. 높으면 뺏고 뺏기는 소모전이다.");

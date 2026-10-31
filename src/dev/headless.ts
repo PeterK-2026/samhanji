@@ -45,6 +45,7 @@ export interface RunResult {
   endMonth: number;
   months: number;
   winner: FactionId | null; // 삼한 통일
+  judged: FactionId | null; // 시대의 끝 판정
   winYear: number | null;
   destroyed: Partial<Record<FactionId, number>>; // 멸망 연도
   captures: number; // 지역 점령 횟수
@@ -73,7 +74,7 @@ export async function runHeadless(opt: RunOptions): Promise<RunResult> {
   const maxCalls = opt.maxCallsPerMonth ?? 20000;
   const res: RunResult = {
     scenario: opt.scenario, seed: opt.seed, startYear, endYear: s.year, endMonth: s.month, months: 0,
-    winner: null, winYear: null, destroyed: {}, captures: 0, recaptures: 0, wars: 0, battles: 0, atkWins: 0, battleMonths: 0, years: [], falls: {}, extinctYear: null, ioCalls: 0,
+    winner: null, judged: null, winYear: null, destroyed: {}, captures: 0, recaptures: 0, wars: 0, battles: 0, atkWins: 0, battleMonths: 0, years: [], falls: {}, extinctYear: null, ioCalls: 0,
     final: {} as RunResult["final"], history: [], violations: [], error: null, ms: 0,
   };
   const seen = new Set<string>();
@@ -186,6 +187,7 @@ export async function runHeadless(opt: RunOptions): Promise<RunResult> {
     const cause = s.factions[f].fallCause;
     if (cause) res.falls[f] = cause;
   }
+  res.judged = s.judged ?? null;
   const v = victor(s);
   if (v) {
     res.winner = v;

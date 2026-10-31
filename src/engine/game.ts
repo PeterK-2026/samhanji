@@ -4,7 +4,7 @@ import { resumeBattles } from "./battle";
 import { COMMANDS, runCommand, type Ctx } from "./commands";
 import { monthStart } from "./economy";
 import type { IO } from "./io";
-import { playerAlive, regionLabel, victor } from "./politics";
+import { ERA_END, judge, playerAlive, regionLabel, victor } from "./politics";
 import { governorOf, officersIn, readyOfficersIn, regionOf, rulerHere, seasonName, shuffle } from "./state";
 import type { GameState } from "./types";
 
@@ -83,6 +83,25 @@ export class Game {
       s.over = true;
       this.io.clear();
       this.io.say("그대의 나라는 멸망했습니다… (GAME OVER)");
+      await this.io.pause("타이틀로 돌아갑니다");
+      return true;
+    }
+    const leader = judge(s);
+    if (!leader) {
+      s.over = true;
+      this.io.clear();
+      this.io.say("삼한의 나라들이 모두 사라졌습니다. 새로운 시대는 다른 이들의 몫입니다.");
+      await this.io.pause("타이틀로 돌아갑니다");
+      return true;
+    }
+    if (s.year >= ERA_END) {
+      s.over = true;
+      s.judged = leader;
+      this.io.clear();
+      this.io.say(`${s.year}년, 삼한의 영웅들이 모두 역사 속으로 사라졌습니다. 통일은 이루지 못한 채 시대가 저뭅니다.`);
+      this.io.say(s.factions[leader].player
+        ? `${s.factions[leader].name}이(가) 가장 넓은 땅을 지켰습니다. 그대의 판정승입니다!`
+        : `가장 넓은 땅을 차지한 나라는 ${s.factions[leader].name}입니다.`);
       await this.io.pause("타이틀로 돌아갑니다");
       return true;
     }
