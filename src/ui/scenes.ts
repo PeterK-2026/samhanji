@@ -4,7 +4,7 @@
 import { regionDef, REGION_DEFS } from "../data/regions";
 import { FACTION_INFO } from "../data/scenarios";
 import type { BattleView } from "../engine/io";
-import { adjacent, connectedOwn, freeOfficersIn, governorOf, menCap, menIn, officersIn, regionOf, relation } from "../engine/state";
+import { adjacent, connectedOwn, freeOfficersIn, governorOf, knowsRegion, menCap, menIn, officersIn, regionOf, relation, visibleMen } from "../engine/state";
 import { FACTION_IDS, type FactionId, type GameState, type Officer } from "../engine/types";
 import { battlefieldImg, officerImg, regionImg, strategicMapImg } from "./assets";
 import { MAP_H, MAP_W, project } from "./map";
@@ -257,9 +257,10 @@ function cmdScene(no: number): Builder {
     }
     if (no === 3) {
       const tg = enemies.slice(0, 4);
-      const max = Math.max(menIn(c.s, rid), ...tg.map((d) => menIn(c.s, d)), 1);
+      const foe = (d: number) => visibleMen(c.s, d, f);
+      const max = Math.max(menIn(c.s, rid), ...tg.map(foe), 1);
       return [cutout(id, mapCrop(center, 210, [...tg.map((d, i) => arrow(rid, d, RED, i)), dot(rid, color, r.name, 1.2), ...tg.map((d) => dot(d, ownColor(d), name(d)))])),
-        ...head, bars([{ label: "아군", v: menIn(c.s, rid), max, color: RED }, ...tg.slice(0, 2).map((d) => ({ label: name(d), v: menIn(c.s, d), max, color: ownColor(d) }))], 210)];
+        ...head, bars([{ label: "아군", v: menIn(c.s, rid), max, color: RED }, ...tg.slice(0, 2).map((d) => ({ label: name(d), v: foe(d), max, color: ownColor(d), note: `${knowsRegion(c.s, d, f) ? "" : "약 "}${fmt(foe(d))}` }))], 210)];
     }
     if (no === 4 || no === 11 || no === 17) {
       const list = [...offs].sort((a, b) => (no === 11 ? a.loy - b.loy : b.war - a.war));

@@ -5,7 +5,7 @@ import { MAX_FOOD, MAX_GOLD, factionTotals } from "./economy";
 import type { IO, Option } from "./io";
 import { regionLabel } from "./politics";
 import {
-  adjacent, age, battleAt, bestBy, breakAlliance, chance, changeRelation, clamp, connectedOwn, factionOfficers, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, readyOfficersIn, regionOf, relation, rulerHere,
+  adjacent, age, battleAt, bestBy, breakAlliance, chance, changeRelation, clamp, connectedOwn, factionOfficers, freeOfficersIn, isAllied, knowsRegion, menCap, menIn, officersIn, rand, readyOfficersIn, regionOf, relation, rulerHere, visibleMen,
 } from "./state";
 import { FACTION_IDS, pairKey, type FactionId, type GameState, type Officer } from "./types";
 
@@ -162,8 +162,8 @@ async function cmdWar(c: Ctx): Promise<boolean> {
     army.map((o, i) => [i === 0 ? "총대장" : "", o.name, o.men, o.war, o.int]),
     ["", "장수", "병사", "무력", "지력"],
   );
-  const foeMen = officersIn(c.s, t).reduce((a, o) => a + o.men, 0);
-  c.io.say(`목표 ${tr.name} · 군주 ${tr.owner && c.s.factions[tr.owner].ruler ? c.s.officers[c.s.factions[tr.owner].ruler!].name : "-"} · 적 병력 약 ${Math.round(foeMen / 1000) * 1000} · 군량 ${food} · 금 ${gold}`);
+  const foeMen = visibleMen(c.s, t, c.f);
+  c.io.say(`목표 ${tr.name} · 군주 ${tr.owner && c.s.factions[tr.owner].ruler ? c.s.officers[c.s.factions[tr.owner].ruler!].name : "-"} · 적 병력 ${knowsRegion(c.s, t, c.f) ? "" : "약 "}${foeMen} · 군량 ${food} · 금 ${gold}`);
   if (!(await c.io.confirm("출진합니까?"))) return false;
   await war(c.s, c.io, c.f, c.rid, t, { officers: army, food, gold });
   return true;
@@ -376,11 +376,11 @@ export function showRegion(c: Ctx, id: number, full: boolean) {
   const d = regionDef(id);
   c.io.say(`【${regionLabel(c.s, id)} ${d.hanja}】 ${owner}  인구 ${r.pop}  성곽 ${r.forts}`);
   const offs = officersIn(c.s, id);
-  if (full || r.owner === c.f || r.spiedBy.includes(c.f)) {
+  if (full || knowsRegion(c.s, id, c.f)) {
     c.io.say(`금 ${r.gold}  군량 ${r.food}  세율 ${r.rate}  민심 ${r.loyalty}  개발 ${r.land}  치수 ${r.flood}  군마 ${r.horses}`);
     c.io.table(offs.map((o) => [o.name, o.int, o.war, o.chr, o.loy, o.men, o.trn]), ["장수", "지력", "무력", "매력", "충성", "병사", "훈련"]);
   } else {
-    c.io.say(`장수 ${offs.length}명  병사 약 ${Math.round(menIn(c.s, id) / 1000) * 1000}명 (자세한 사항은 첩보로)`);
+    c.io.say(`장수 ${offs.length}명  병사 약 ${visibleMen(c.s, id, c.f)}명 (자세한 사항은 첩보로)`);
   }
 }
 
@@ -547,9 +547,10 @@ function cmdAdvice(c: Ctx): boolean {
   if (r.loyalty < 40) tips.push("민심이 흉흉합니다. 세율을 낮추거나 시혜를 베푸십시오.");
   const threats = adjacent(c.rid).map((n) => regionOf(c.s, n)).filter((x) => x.owner && x.owner !== c.f && !isAllied(c.s, c.f, x.owner));
   for (const t of threats) {
-    const em = menIn(c.s, t.id);
-    if (em > men * 1.3) tips.push(`${t.name}의 ${c.s.factions[t.owner!].name}군(${em}명)이 우리(${men}명)보다 강합니다. 방비를 굳히십시오.`);
-    else if (men > em * 1.8 + 2000) tips.push(`${t.name}은(는) 방비가 약합니다(${em}명). 칠 만합니다.`);
+    const em = visibleMen(c.s, t.id, c.f);
+    const about = knowsRegion(c.s, t.id, c.f) ? "" : "약 ";
+    if (em > men * 1.3) tips.push(`${t.name}의 ${c.s.factions[t.owner!].name}군(${about}${em}명)이 우리(${men}명)보다 강합니다. 방비를 굳히십시오.`);
+    else if (men > em * 1.8 + 2000) tips.push(`${t.name}은(는) 방비가 약합니다(${about}${em}명). 칠 만합니다.`);
   }
   if (freeOfficersIn(c.s, c.rid).some((o) => o.hidden)) tips.push("이 고을에 숨은 인재가 있다는 소문이 있습니다.");
   if (r.land < 50 && r.gold > 300) tips.push("땅을 개간하면 가을 수확이 늘어납니다.");

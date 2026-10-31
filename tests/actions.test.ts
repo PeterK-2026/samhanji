@@ -5,7 +5,7 @@ import { aiAct } from "../src/engine/ai";
 import { runCommand, type Ctx } from "../src/engine/commands";
 import type { IO, Option } from "../src/engine/io";
 import { MAX_GOLD } from "../src/engine/economy";
-import { adjacent, createGame, officersIn, readyOfficersIn, regionOf, rulerHere } from "../src/engine/state";
+import { adjacent, createGame, menIn, officersIn, readyOfficersIn, regionOf, rulerHere, visibleMen } from "../src/engine/state";
 import type { FactionId, GameState } from "../src/engine/types";
 
 // choose·number를 차례로 답하는 IO. 장수 목록이 나오면 그 목록을 기록한다
@@ -136,6 +136,29 @@ describe("취소와 창고 한도", () => {
     io.number = (p, min, max, def) => ((asked = max), number(p, min, max, def));
     await runCommand(ctx(s, io, rid, f), 13, async () => "continue");
     expect(asked).toBe(100);
+  });
+});
+
+describe("보이는 병력", () => {
+  it("남의 땅은 어림값, 우리 땅과 정탐한 땅은 정확한 값", () => {
+    const { s, f, rid } = setup(1, false);
+    const foe = s.regions.find((x) => x.owner && x.owner !== f && officersIn(s, x.id).length)!;
+    const o = officersIn(s, foe.id)[0];
+    for (const x of officersIn(s, foe.id)) x.men = 0;
+    o.men = 3456;
+    expect(visibleMen(s, foe.id, f)).toBe(3000);
+    expect(visibleMen(s, rid, f)).toBe(menIn(s, rid));
+    foe.spiedBy.push(f);
+    expect(visibleMen(s, foe.id, f)).toBe(3456);
+  });
+
+  it("적이 조금이라도 있으면 0으로 보이지 않는다", () => {
+    const { s, f } = setup(1, false);
+    const foe = s.regions.find((x) => x.owner && x.owner !== f && officersIn(s, x.id).length)!;
+    for (const x of officersIn(s, foe.id)) x.men = 0;
+    expect(visibleMen(s, foe.id, f)).toBe(0);
+    officersIn(s, foe.id)[0].men = 200;
+    expect(visibleMen(s, foe.id, f)).toBe(1000);
   });
 });
 

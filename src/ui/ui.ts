@@ -1,7 +1,7 @@
 import { regionDef } from "../data/regions";
 import { FACTION_INFO } from "../data/scenarios";
 import type { BattleFx, BattleView, IO, Option } from "../engine/io";
-import { freeOfficersIn, governorOf, menIn, officersIn, seasonName } from "../engine/state";
+import { freeOfficersIn, governorOf, knowsRegion, officersIn, seasonName, visibleMen } from "../engine/state";
 import type { FactionId, GameState } from "../engine/types";
 import { officerImg, regionImg } from "./assets";
 import { BattleMap } from "./battleMap";
@@ -317,7 +317,7 @@ export class UI implements IO {
     const ruler = owner?.ruler ? s.officers[owner.ruler].name : "—";
     const offs = officersIn(s, r.id);
     const viewer = this.viewer(focus);
-    const known = !!r.owner && (r.owner === viewer || (viewer !== null && r.spiedBy.includes(viewer)));
+    const known = !!r.owner && knowsRegion(s, r.id, viewer);
     const q = (v: number) => (known ? v.toLocaleString("ko-KR") : "?");
     const free = freeOfficersIn(s, r.id).filter((o) => !o.hidden).length;
 
@@ -338,7 +338,7 @@ export class UI implements IO {
     const n = (v: number) => v.toLocaleString("ko-KR");
     const cells: [string, string, string][] = [
       ["인구", n(r.pop), "c1"], ["금", q(r.gold), "c2"], ["민심", known ? String(r.loyalty) : "?", "c3"],
-      ["병사", n(menIn(s, r.id)), "c1"], ["군량", q(r.food), "c2"], ["개발", String(r.land), "c3"],
+      ["병사", `${known || !offs.length ? "" : "약 "}${n(visibleMen(s, r.id, viewer))}`, "c1"], ["군량", q(r.food), "c2"], ["개발", String(r.land), "c3"],
       ["장수", String(offs.length), "c1"], ["세율", known ? String(r.rate) : "?", "c2"], ["치수", String(r.flood), "c3"],
       ["재야", known ? String(free) : "?", "c1"], ["군마", q(r.horses), "c2"], ["성곽", String(r.forts), "c3"],
     ];

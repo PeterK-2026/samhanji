@@ -200,6 +200,16 @@ export const battleAt = (s: GameState, rid: number) => s.battles?.find((b) => b.
 export const freeOfficersIn = (s: GameState, rid: number) =>
   Object.values(s.officers).filter((o) => o.alive && o.region === rid && o.faction === null);
 export const menIn = (s: GameState, rid: number) => officersIn(s, rid).reduce((a, o) => a + o.men, 0);
+// 그 세력이 지역 사정을 아는가: 자기 땅이거나 이번 달에 정탐했을 때
+export const knowsRegion = (s: GameState, rid: number, f: FactionId | null) => {
+  const r = regionOf(s, rid);
+  return !!f && (r.owner === f || r.spiedBy.includes(f));
+};
+// 보이는 병력: 모르는 지역은 천 단위 어림값만 알 수 있다. 화면·명령·조언이 모두 이 값을 쓴다
+export function visibleMen(s: GameState, rid: number, f: FactionId | null): number {
+  const men = menIn(s, rid);
+  return knowsRegion(s, rid, f) || !men ? men : Math.max(1000, Math.round(men / 1000) * 1000);
+}
 export const regionsOf = (s: GameState, f: FactionId) => s.regions.filter((r) => r.owner === f);
 export const factionOfficers = (s: GameState, f: FactionId) =>
   Object.values(s.officers).filter((o) => o.alive && o.faction === f);
