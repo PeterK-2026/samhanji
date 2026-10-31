@@ -5,7 +5,7 @@ import { MAX_FOOD, MAX_GOLD, factionTotals } from "./economy";
 import type { IO, Option } from "./io";
 import { regionLabel } from "./politics";
 import {
-  adjacent, age, battleAt, bestBy, breakAlliance, chance, changeRelation, clamp, connectedOwn, factionOfficers, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, regionOf, relation,
+  adjacent, age, battleAt, bestBy, breakAlliance, chance, changeRelation, clamp, connectedOwn, factionOfficers, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, readyOfficersIn, regionOf, relation, rulerHere,
 } from "./state";
 import { FACTION_IDS, pairKey, type FactionId, type GameState, type Officer } from "./types";
 
@@ -14,12 +14,13 @@ export interface Ctx {
   io: IO;
   rid: number;
   f: FactionId;
+  actors?: Officer[]; // 이번 명령을 맡은 장수. 명령이 실제로 이뤄지면 행동을 마친 것으로 표시한다
 }
 
 export const COMMANDS: { no: number; name: string; free?: boolean }[] = [
   { no: 0, name: "휴식" }, { no: 1, name: "이동" }, { no: 2, name: "수송" }, { no: 3, name: "전쟁" },
   { no: 4, name: "군사" }, { no: 5, name: "인재" }, { no: 6, name: "외교" }, { no: 7, name: "첩보" },
-  { no: 8, name: "정보", free: true }, { no: 9, name: "개간" }, { no: 10, name: "치수" }, { no: 11, name: "포상" },
+  { no: 8, name: "정보" }, { no: 9, name: "개간" }, { no: 10, name: "치수" }, { no: 11, name: "포상" },
   { no: 12, name: "시혜" }, { no: 13, name: "상인" }, { no: 14, name: "세율", free: true }, { no: 15, name: "세력", free: true },
   { no: 16, name: "위임", free: true }, { no: 17, name: "추방", free: true }, { no: 18, name: "조언", free: true }, { no: 19, name: "기타", free: true },
 ];
@@ -64,14 +65,24 @@ function owned(c: Ctx) {
   return regionOf(c.s, c.rid);
 }
 
+const ready = (c: Ctx) => readyOfficersIn(c.s, c.rid);
+
+// 명령을 맡을 장수 한 명을 고른다
+async function pickActor(c: Ctx, prompt: string, list = ready(c)): Promise<Officer | null> {
+  const o = await pickOfficer(c, prompt, list);
+  c.actors = o ? [o] : [];
+  return o;
+}
+
 // ── 1 이동 ──
 async function cmdMove(c: Ctx): Promise<boolean> {
   const dests = adjacent(c.rid).filter((n) => regionOf(c.s, n).owner === c.f);
   if (!dests.length) return c.io.say("인접한 아군 지역이 없습니다."), false;
   const to = await c.io.pickRegion("어느 지역으로 이동합니까?", dests);
   if (!to) return false;
-  const movers = await pickOfficers(c, "이동할 장수를 고르십시오", officersIn(c.s, c.rid));
+  const movers = await pickOfficers(c, "이동할 장수를 고르십시오", ready(c));
   if (!movers.length) return false;
+  c.actors = movers;
   const r = owned(c);
   const dest = regionOf(c.s, to);
   // 받는 지역의 창고 한도를 넘지 않게 한다
@@ -89,6 +100,8 @@ async function cmdMove(c: Ctx): Promise<boolean> {
 async function cmdSend(c: Ctx): Promise<boolean> {
   const dests = connectedOwn(c.s, c.rid);
   if (!dests.length) return c.io.say("보낼 수 있는 아군 지역이 없습니다."), false;
+  const carrier = await pickActor(c, "누가 수송을 맡습니까?");
+  if (!carrier) return false;
   const to = await c.io.pickRegion("어느 지역으로 보냅니까?", dests);
   if (!to) return false;
   const r = owned(c);
@@ -99,7 +112,7 @@ async function cmdSend(c: Ctx): Promise<boolean> {
   const food = (await c.io.number(`보낼 군량 (0~${fMax})`, 0, fMax, 0)) ?? 0;
   if (!gold && !food) return false;
   r.gold -= gold; r.food -= food; dest.gold += gold; dest.food += food;
-  c.io.say(`${dest.name}(으)로 금 ${gold}, 군량 ${food}을(를) 보냈습니다.`);
+  c.io.say(`${carrier.name}이(가) ${dest.name}(으)로 금 ${gold}, 군량 ${food}을(를) 실어 보냈습니다.`);
   return true;
 }
 
@@ -134,9 +147,10 @@ async function cmdWar(c: Ctx): Promise<boolean> {
   if (tr.owner && isAllied(c.s, c.f, tr.owner)) {
     if (!(await c.io.confirm(`${c.s.factions[tr.owner].name}은(는) 동맹국입니다. 동맹을 깨고 공격합니까?`))) return false;
   }
-  const army = await pickOfficers(c, `출진할 장수 (처음 고른 장수가 총대장, 최대 ${MAX_UNITS}명)`, officersIn(c.s, c.rid).filter((o) => o.men > 0));
+  const army = await pickOfficers(c, `출진할 장수 (처음 고른 장수가 총대장, 최대 ${MAX_UNITS}명)`, ready(c).filter((o) => o.men > 0));
   if (!army.length) return false;
   if (army.length > MAX_UNITS) army.length = MAX_UNITS;
+  c.actors = army;
   const r = owned(c);
   const men = army.reduce((a, o) => a + o.men, 0);
   // 원작: "Bring how much food? (Need N for 1 month)" — 병사 1명당 한 달 1석
@@ -158,9 +172,10 @@ async function cmdWar(c: Ctx): Promise<boolean> {
 // 이어지는 전투에 원군을 보낸다. 다음 달 전투부터 전장에 들어선다.
 async function cmdReinforce(c: Ctx, t: number, side: "atk" | "def"): Promise<boolean> {
   const tr = regionOf(c.s, t);
-  const army = await pickOfficers(c, `${tr.name}에 보낼 원군 (${side === "atk" ? "공격측" : "수비측"})`, officersIn(c.s, c.rid).filter((o) => o.men > 0));
+  const army = await pickOfficers(c, `${tr.name}에 보낼 원군 (${side === "atk" ? "공격측" : "수비측"})`, ready(c).filter((o) => o.men > 0));
   if (!army.length) return false;
   if (army.length > MAX_UNITS) army.length = MAX_UNITS;
+  c.actors = army;
   const r = owned(c);
   const men = army.reduce((a, o) => a + o.men, 0);
   const food = await c.io.number(`가져갈 군량 (0~${r.food}) — 한 달 분 ${men}석`, 0, r.food, Math.min(r.food, men));
@@ -176,9 +191,9 @@ async function cmdReinforce(c: Ctx, t: number, side: "atk" | "def"): Promise<boo
 async function cmdMilitary(c: Ctx): Promise<boolean> {
   const r = owned(c);
   const sub = await c.io.choose("군사", [{ value: 1, label: "징병" }, { value: 2, label: "재배치" }, { value: 3, label: "훈련" }], { cancel: true });
-  const offs = officersIn(c.s, c.rid);
+  const offs = ready(c);
   if (sub === 1) {
-    const o = await pickOfficer(c, "누가 병사를 모읍니까?", offs);
+    const o = await pickActor(c, "누가 병사를 모읍니까?", offs);
     if (!o) return false;
     const room = menCap(o) - o.men;
     const max = Math.min(room, r.gold * 2, Math.floor(r.pop * 0.1));
@@ -194,9 +209,10 @@ async function cmdMilitary(c: Ctx): Promise<boolean> {
     return true;
   }
   if (sub === 2) {
-    const a = await pickOfficer(c, "누구의 병사를 넘깁니까?", offs.filter((o) => o.men > 0));
+    const a = await pickActor(c, "누구의 병사를 넘깁니까?", offs.filter((o) => o.men > 0));
     if (!a) return false;
-    const b = await pickOfficer(c, "누구에게 넘깁니까?", offs.filter((o) => o !== a));
+    // 받는 장수는 할 일이 없으므로 이미 행동한 장수여도 된다
+    const b = await pickOfficer(c, "누구에게 넘깁니까?", officersIn(c.s, c.rid).filter((o) => o !== a));
     if (!b) return false;
     const max = Math.min(a.men, menCap(b) - b.men);
     const n = await c.io.number(`몇 명을 넘깁니까? (최대 ${max})`, 0, max, max);
@@ -207,7 +223,7 @@ async function cmdMilitary(c: Ctx): Promise<boolean> {
     return true;
   }
   if (sub === 3) {
-    const o = await pickOfficer(c, "누구의 부대를 훈련합니까?", offs.filter((x) => x.men > 0));
+    const o = await pickActor(c, "누구의 부대를 훈련합니까?", offs.filter((x) => x.men > 0));
     if (!o) return false;
     const gain = 5 + Math.floor((o.war + o.int) / 25);
     o.trn = Math.min(100, o.trn + gain);
@@ -220,7 +236,8 @@ async function cmdMilitary(c: Ctx): Promise<boolean> {
 // ── 5 인재 ──
 async function cmdPerson(c: Ctx): Promise<boolean> {
   const sub = await c.io.choose("인재", [{ value: 1, label: "탐색 (재야 인재 찾기)" }, { value: 2, label: "등용 (재야)" }, { value: 3, label: "빼내기 (적 장수)" }], { cancel: true, columns: 1 });
-  const me = bestBy(officersIn(c.s, c.rid), "chr");
+  if (!sub) return false;
+  const me = await pickActor(c, "누가 이 일을 맡습니까?");
   if (!me) return false;
   if (sub === 1) {
     const hidden = freeOfficersIn(c.s, c.rid).filter((o) => o.hidden);
@@ -264,6 +281,7 @@ async function cmdPerson(c: Ctx): Promise<boolean> {
 
 // ── 6 외교 ──
 async function cmdDiplomacy(c: Ctx): Promise<boolean> {
+  if (!rulerHere(c.s, c.rid, c.f)) return c.io.say("외교는 군주가 머무는 지역에서만 할 수 있습니다."), false;
   const others = FACTION_IDS.filter((x) => x !== c.f && c.s.factions[x].alive);
   const tv = await c.io.choose("어느 나라와 교섭합니까?", others.map((x, i) => ({
     value: i + 1,
@@ -272,7 +290,8 @@ async function cmdDiplomacy(c: Ctx): Promise<boolean> {
   if (!tv) return false;
   const t = others[tv - 1];
   const r = owned(c);
-  const envoy = bestBy(officersIn(c.s, c.rid), "chr")!;
+  const envoy = await pickActor(c, "누구를 사신으로 보냅니까?");
+  if (!envoy) return false;
   const sub = await c.io.choose("무엇을 합니까?", [
     { value: 1, label: "예물 (우호 상승)" }, { value: 2, label: "동맹 제안 (금 200)" }, { value: 3, label: "동맹 파기" },
   ], { cancel: true, columns: 1 });
@@ -317,7 +336,8 @@ async function cmdSpy(c: Ctx): Promise<boolean> {
   const r = owned(c);
   const cost = sub === 1 ? 50 : 100;
   if (r.gold < cost) return c.io.say("금이 부족합니다."), false;
-  const spy = bestBy(officersIn(c.s, c.rid), "int")!;
+  const spy = await pickActor(c, "누구를 보냅니까?");
+  if (!spy) return false;
   const enemyRegions = c.s.regions.filter((x) => x.owner && x.owner !== c.f).map((x) => x.id);
   const t = await c.io.pickRegion("대상 지역을 고르십시오", sub === 1 ? enemyRegions : enemyRegions.filter((id) => adjacent(c.rid).includes(id) || id === c.rid));
   if (!t) return false;
@@ -366,12 +386,16 @@ async function cmdView(c: Ctx): Promise<boolean> {
   const sub = await c.io.choose("무엇을 봅니까?", [
     { value: 1, label: "다른 지역" }, { value: 2, label: "장수" }, { value: 3, label: "우리 장수 일람" }, { value: 4, label: "재야 인재" },
   ], { cancel: true });
+  if (!sub) return false;
+  if (!(await pickActor(c, "누가 알아봅니까?"))) return false;
   if (sub === 1) {
     const t = await c.io.pickRegion("어느 지역을 봅니까?", c.s.regions.map((r) => r.id));
-    if (t) showRegion(c, t, false);
+    if (!t) return false;
+    showRegion(c, t, false);
   } else if (sub === 2) {
     const o = await pickOfficer(c, "누구를 봅니까?", officersIn(c.s, c.rid));
-    if (o) showOfficerCard(c, o);
+    if (!o) return false;
+    showOfficerCard(c, o);
   } else if (sub === 3) {
     c.io.table(
       factionOfficers(c.s, c.f).map((o) => [o.name, regionOf(c.s, o.region).name, o.int, o.war, o.chr, o.loy, o.men]),
@@ -382,7 +406,7 @@ async function cmdView(c: Ctx): Promise<boolean> {
     if (!list.length) c.io.say("이 지역에서 알려진 재야 인재가 없습니다. (인재→탐색)");
     for (const o of list) c.io.say(officerLine(c.s, o));
   }
-  return false;
+  return true;
 }
 
 // ── 9 개간 / 10 치수 ──
@@ -390,9 +414,10 @@ async function cmdDevelop(c: Ctx, key: "land" | "flood"): Promise<boolean> {
   const r = owned(c);
   const label = key === "land" ? "개간" : "치수";
   if (r[key] >= 100) return c.io.say(`더 이상 ${label}할 필요가 없습니다.`), false;
+  const off = await pickActor(c, `누가 ${label}을(를) 지휘합니까?`);
+  if (!off) return false;
   const g = await c.io.number(`${label}에 쓸 금 (0~${r.gold})`, 0, r.gold, Math.min(200, r.gold));
   if (!g) return false;
-  const off = bestBy(officersIn(c.s, c.rid), "int")!;
   const gain = Math.max(1, Math.floor((g / 25) * (0.5 + off.int / 200) * (1 - r[key] / 150)));
   r.gold -= g;
   r[key] = Math.min(100, r[key] + gain);
@@ -403,7 +428,7 @@ async function cmdDevelop(c: Ctx, key: "land" | "flood"): Promise<boolean> {
 // ── 11 포상 ──
 async function cmdReward(c: Ctx): Promise<boolean> {
   const r = owned(c);
-  const o = await pickOfficer(c, "누구에게 상을 내립니까?", officersIn(c.s, c.rid).filter((x) => c.s.factions[c.f].ruler !== x.id));
+  const o = await pickActor(c, "누구에게 상을 내립니까?", ready(c).filter((x) => c.s.factions[c.f].ruler !== x.id));
   if (!o) return false;
   const g = await c.io.number(`하사할 금 (0~${r.gold})`, 0, r.gold, Math.min(100, r.gold));
   if (!g) return false;
@@ -416,6 +441,7 @@ async function cmdReward(c: Ctx): Promise<boolean> {
 // ── 12 시혜 ──
 async function cmdGive(c: Ctx): Promise<boolean> {
   const r = owned(c);
+  if (!(await pickActor(c, "누가 군량을 나눠 줍니까?"))) return false;
   const n = await c.io.number(`백성에게 나눠줄 군량 (0~${r.food})`, 0, r.food, Math.min(2000, r.food));
   if (!n) return false;
   r.food -= n;
@@ -431,6 +457,8 @@ async function cmdMerchant(c: Ctx): Promise<boolean> {
   const sub = await c.io.choose(`상인이 찾아왔다. (군량 100석 = 금 ${p})`, [
     { value: 1, label: "군량 사기" }, { value: 2, label: "군량 팔기" }, { value: 3, label: "군마 사기 (10필 = 금 30)" }, { value: 4, label: "무기 사기" },
   ], { cancel: true, columns: 2 });
+  if (!sub) return false;
+  if (!(await pickActor(c, "누가 상인을 만납니까?"))) return false;
   if (sub === 1) {
     const max = Math.max(0, Math.min(Math.floor((r.gold / p) * 100), MAX_FOOD - r.food));
     const n = await c.io.number(`몇 석을 삽니까? (최대 ${max})`, 0, max, Math.min(max, 5000));
@@ -529,10 +557,17 @@ export type OtherHandler = (c: Ctx) => Promise<"continue" | "quit">;
 
 export async function runCommand(c: Ctx, no: number, other: OtherHandler): Promise<boolean | "quit"> {
   // 추방(무료 명령)으로 마지막 장수를 내보낸 뒤에는 장수가 필요한 명령을 쓸 수 없다
-  if (!COMMANDS.find((x) => x.no === no)?.free && officersIn(c.s, c.rid).length === 0) {
+  if (!COMMANDS.find((x) => x.no === no)?.free && ready(c).length === 0) {
     c.io.say("이 지역에는 명령을 수행할 장수가 없습니다.");
     return false;
   }
+  c.actors = [];
+  const res = await dispatch(c, no, other);
+  if (res === true) for (const o of c.actors) o.acted = true;
+  return res;
+}
+
+async function dispatch(c: Ctx, no: number, other: OtherHandler): Promise<boolean | "quit"> {
   switch (no) {
     case 1: return cmdMove(c);
     case 2: return cmdSend(c);

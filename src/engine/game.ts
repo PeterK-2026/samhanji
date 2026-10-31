@@ -5,7 +5,7 @@ import { COMMANDS, runCommand, type Ctx } from "./commands";
 import { monthStart } from "./economy";
 import type { IO } from "./io";
 import { playerAlive, regionLabel, victor } from "./politics";
-import { governorOf, officersIn, regionOf, seasonName, shuffle } from "./state";
+import { governorOf, officersIn, readyOfficersIn, regionOf, rulerHere, seasonName, shuffle } from "./state";
 import type { GameState } from "./types";
 
 export type RunResult = { kind: "title" } | { kind: "load"; state: GameState };
@@ -23,6 +23,7 @@ export class Game {
         this.io.refresh();
         this.io.say(`━━ ${s.year}년 ${s.month}월 (${seasonName(s.month)}) ━━`);
         this.io.scene?.(["spring", "summer", "autumn", "winter"][Math.min(3, Math.floor((s.month - 1) / 3))]);
+        for (const o of Object.values(s.officers)) delete o.acted;
         const news = monthStart(s).filter((n) => !n.to || s.factions[n.to].player);
         for (const n of news) this.io.say(n.text);
         this.io.refresh();
@@ -63,6 +64,7 @@ export class Game {
 
   private async checkEnd(): Promise<boolean> {
     const s = this.s;
+    if (s.over) return true;
     const v = victor(s);
     if (v) {
       s.over = true;
@@ -107,18 +109,22 @@ export class Game {
     const ctx: Ctx = { s, io: this.io, rid, f };
     this.io.clear();
     this.io.refresh(rid);
-    // 장수가 없는 지역은 명령을 내릴 수 없으므로 건너뛴다 (모두 전장에 나가 있거나 포위된 경우 포함)
-    if (officersIn(s, rid).length === 0) return "done";
+    // 명령을 받을 장수가 없는 지역은 건너뛴다 (모두 전장에 나갔거나 포위됐거나, 다른 지역에서 행동하고 온 경우 포함)
+    if (readyOfficersIn(s, rid).length === 0) return "done";
     const gov = governorOf(s, rid)!;
     const direct = gov.id === s.factions[f].ruler;
     const govLabel = `${direct ? "군주 직할" : "태수"} ${gov.name}`;
     this.io.say(`【${regionLabel(s, rid)}】 ${govLabel} · 장수 ${officersIn(s, rid).length}명`);
+    // 장수마다 이번 달에 한 번씩 명령을 수행한다. 모두 행동했거나 휴식을 고르면 턴이 끝난다
     for (;;) {
+      const left = readyOfficersIn(s, rid);
+      if (!left.length || r.owner !== f) return "done";
       this.io.refresh(rid);
       this.io.scene?.("menu");
+      const diplomacy = rulerHere(s, rid, f);
       const no = await this.io.choose(
-        `${regionLabel(s, rid)} — ${govLabel}, 명령은? (0~19)`,
-        COMMANDS.map((c) => ({ value: c.no, label: c.name })),
+        `${regionLabel(s, rid)} — ${govLabel}, 명령은? (남은 장수 ${left.length}명 · 0 휴식은 턴 종료)`,
+        COMMANDS.map((c) => (c.no === 6 && !diplomacy ? { value: c.no, label: `${c.name} (군주만)`, disabled: true } : { value: c.no, label: c.name })),
         { columns: 4 },
       );
       if (no === null) continue;
@@ -130,11 +136,13 @@ export class Game {
       if (s.over) return "done";
       if (res === true) {
         this.io.refresh(rid);
+        if (await this.checkEnd()) return "done";
+        const rest = readyOfficersIn(s, rid);
+        if (rest.length) this.io.say(`아직 행동하지 않은 장수: ${rest.map((o) => o.name).join(", ")}`);
         // 전쟁은 전투 화면에서 이미 한 번 멈췄다
         if (no !== 3) await this.io.pause();
-        return "done";
       }
-      // 소비하지 않는 명령: 결과를 보여 준 뒤 다시 명령 선택
+      // 결과를 보여 준 뒤 남은 장수로 다시 명령 선택
     }
   }
 

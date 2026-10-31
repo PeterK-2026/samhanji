@@ -3,9 +3,9 @@ import { sendReinforcement, war } from "./battle";
 import { MAX_FOOD } from "./economy";
 import type { IO } from "./io";
 import {
-  adjacent, battleAt, bestBy, chance, clamp, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, regionOf,
+  adjacent, battleAt, bestBy, chance, clamp, freeOfficersIn, isAllied, menCap, menIn, officersIn, rand, readyOfficersIn, regionOf,
 } from "./state";
-import type { FactionId, GameState } from "./types";
+import type { FactionId, GameState, Officer } from "./types";
 
 function defenseStrength(s: GameState, rid: number): number {
   const r = regionOf(s, rid);
@@ -46,13 +46,25 @@ function stepToFront(s: GameState, rid: number, f: FactionId): number | null {
   return null;
 }
 
-// AI 지역 한 곳의 이번 달 행동 (1개 명령)
+// 명령을 맡은 장수들을 행동 완료로 표시한다
+function spend(...offs: Officer[]): true {
+  for (const o of offs) o.acted = true;
+  return true;
+}
+
+// AI 지역 한 곳의 이번 달 턴: 플레이어처럼 장수마다 한 번씩 명령을 수행한다
 export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
+  while (await aiStep(s, io, rid));
+}
+
+// 명령 하나. 할 일이 없으면 false
+async function aiStep(s: GameState, io: IO, rid: number): Promise<boolean> {
   const r = regionOf(s, rid);
   const f = r.owner;
-  if (!f) return;
-  const offs = officersIn(s, rid);
-  if (!offs.length) return;
+  if (!f) return false;
+  const offs = readyOfficersIn(s, rid);
+  if (!offs.length) return false;
+  const all = officersIn(s, rid);
   const men = menIn(s, rid);
   const aggressive = s.factions[f].player ? 0.8 : [0.8, 1, 1.15][s.difficulty - 1];
 
@@ -61,7 +73,7 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
     const buy = Math.min(Math.floor((r.gold * 0.6 * 100) / s.foodPrice), men * 0.03 * 8);
     r.gold -= Math.ceil((buy * s.foodPrice) / 100);
     r.food = Math.min(MAX_FOOD, r.food + Math.floor(buy));
-    return;
+    return spend(offs[0]);
   }
   // 2) 민심 위기
   if (r.loyalty < 35) {
@@ -70,7 +82,7 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
       const n = Math.floor(r.food * 0.15);
       r.food -= n;
       r.loyalty = Math.min(100, r.loyalty + Math.ceil((n / r.pop) * 400));
-      return;
+      return spend(offs[0]);
     }
   }
   // 3) 이어지는 전투에 원군: 맞닿은 곳에서 우리 편이 싸우고 있으면 병력을 보탠다
@@ -83,11 +95,11 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
     const ruler = s.factions[f].ruler;
     const spare = [...offs].filter((o) => o.men >= 800 && o.id !== ruler).sort((a, b) => b.men - a.men);
     const keep = isFrontier(s, rid, f) ? 1 : 0;
-    const go = spare.slice(0, Math.max(0, Math.min(3, offs.length - keep)));
+    const go = spare.slice(0, Math.max(0, Math.min(3, all.length - keep)));
     if (!go.length) continue;
     const need = go.reduce((a, o) => a + o.men, 0);
     sendReinforcement(s, n, side, f, rid, go, Math.min(r.food, Math.ceil(need * 1.2)), Math.min(200, Math.floor(r.gold / 4)));
-    return;
+    return spend(...go);
   }
 
   // 4) 공격 (다른 나라가 이미 포위 중인 곳은 제외)
@@ -110,7 +122,8 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
     if (enough && chance(0.7)) {
       const sorted = [...offs].filter((o) => o.men > 0).sort((a, b) => b.war - a.war);
       const keep = Math.max(garrison(rid), isFrontier(s, rid, f) && sorted.length > 1 ? 1 : 0);
-      const army = sorted.slice(0, Math.max(1, sorted.length - keep)).slice(0, 8);
+      const stay = all.length - sorted.length; // 이미 행동했거나 병사가 없어 어차피 남는 장수
+      const army = sorted.slice(0, Math.max(1, sorted.length - Math.max(0, keep - stay))).slice(0, 8);
       // 군주는 위험하면 남는다
       const ruler = s.factions[f].ruler;
       const final = army.length > 1 ? army.filter((o) => o.id !== ruler) : army;
@@ -120,8 +133,9 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
       const food = Math.min(r.food, Math.ceil(armyMen * 1.15)); // 원작처럼 한 달 치(병사 1명당 1석)에 여유분
       const gold = Math.min(300, Math.floor(r.gold / 3));
       s.lastWar[f] = now;
+      spend(...final);
       await war(s, io, f, rid, t.n, { officers: final, food, gold });
-      return;
+      return true;
     }
   }
   // 4) 재야 인재
@@ -135,7 +149,7 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
       t.faction = f;
       t.loy = rand(65, 85);
     }
-    return;
+    return spend(me);
   }
   // 5) 전방이면 징병·훈련
   const frontier = isFrontier(s, rid, f);
@@ -149,28 +163,28 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
         weakest.men += n;
         r.gold -= Math.ceil(n / 2);
         r.pop -= n;
-        return;
+        return spend(weakest);
       }
     }
     const untrained = offs.filter((o) => o.men > 0 && o.trn < 75).sort((a, b) => a.trn - b.trn)[0];
     if (untrained) {
       untrained.trn = Math.min(100, untrained.trn + 5 + Math.floor((untrained.war + untrained.int) / 25));
-      return;
+      return spend(untrained);
     }
   } else {
     // 6) 후방이면 전방 쪽으로 병력 이동. 전방과 바로 붙어 있지 않은 깊은 후방도 아군 땅을 따라 한 칸씩 보낸다.
     const step = stepToFront(s, rid, f);
     const ruler = s.factions[f].ruler;
     const movable = offs.filter((o) => o.id !== ruler && o.men > 500);
-    if (step && offs.length > garrison(rid) && movable.length > (offs.length > 1 ? 0 : 1) && chance(0.6)) {
+    if (step && all.length > garrison(rid) && movable.length > (all.length > 1 ? 0 : 1) && chance(0.6)) {
       const dest = step;
       const mover = movable.sort((a, b) => b.men - a.men)[0];
-      if (offs.length > 1 || mover.id !== ruler) {
+      if (all.length > 1 || mover.id !== ruler) {
         mover.region = dest;
         const food = Math.min(Math.floor(r.food * 0.3), MAX_FOOD - regionOf(s, dest).food);
         r.food -= food;
         regionOf(s, dest).food += food;
-        return;
+        return spend(mover);
       }
     }
   }
@@ -182,9 +196,10 @@ export async function aiAct(s: GameState, io: IO, rid: number): Promise<void> {
       const off = bestBy(offs, "int")!;
       r.gold -= g;
       r[key] = Math.min(100, r[key] + Math.max(1, Math.floor((g / 25) * (0.5 + off.int / 200) * (1 - r[key] / 150))));
-      return;
+      return spend(off);
     }
   }
   if (r.loyalty < 55 && r.rate > 35) r.rate -= 5;
   else if (r.loyalty > 75 && r.rate < 55) r.rate += 5;
+  return false;
 }

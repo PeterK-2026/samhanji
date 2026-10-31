@@ -19,6 +19,7 @@ export interface Officer {
   hidden: boolean; // 재야 장수가 아직 발견되지 않음
   alive: boolean;
   inBattle?: number; // 싸우고 있는 전장(목표 지역 id). 이 동안은 다른 명령을 받지 않는다
+  acted?: boolean; // 이번 달에 이미 명령을 수행했다. 다음 달 초에 풀린다
 }
 
 export interface Region {

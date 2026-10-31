@@ -184,6 +184,10 @@ export const regionOf = (s: GameState, id: number) => s.regions[id - 1];
 // 전투 중(inBattle)인 장수는 빼고 센다
 export const officersIn = (s: GameState, rid: number) =>
   Object.values(s.officers).filter((o) => o.alive && !o.inBattle && o.region === rid && o.faction !== null && o.faction === regionOf(s, rid).owner);
+// 이번 달에 아직 명령을 수행하지 않은 장수
+export const readyOfficersIn = (s: GameState, rid: number) => officersIn(s, rid).filter((o) => !o.acted);
+// 외교는 군주가 머무는 지역에서만 할 수 있다
+export const rulerHere = (s: GameState, rid: number, f: FactionId) => officersIn(s, rid).some((o) => o.id === s.factions[f].ruler);
 // 태수: 군주가 있으면 군주(직할), 아니면 매력·지력·무력 합이 가장 높은 장수 [설계]
 export function governorOf(s: GameState, rid: number): Officer | undefined {
   const offs = officersIn(s, rid);

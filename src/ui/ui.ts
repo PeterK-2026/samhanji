@@ -148,7 +148,8 @@ export class UI implements IO {
       this.begin({ kind: "choose", options, cancel: !!opts.cancel, resolve }, prompt);
       this.optionsEl.style.setProperty("--cols", String(opts.columns ?? 3));
       for (const o of options) {
-        const b = h("button", "btn opt");
+        const b = h("button", "btn opt") as HTMLButtonElement;
+        b.disabled = !!o.disabled;
         b.append(h("span", "key", String(o.value)));
         if (o.officer) b.append(img(officerImg(o.officer), "thumb"));
         b.append(h("span", "lbl", o.label));
@@ -358,8 +359,9 @@ export class UI implements IO {
     if (offs.length && (known || r.owner === viewer)) {
       const chips = h("div", "chips");
       for (const o of [...offs].sort((a, b) => (a === gov ? -1 : b === gov ? 1 : 0))) {
-        const chip = h("span", o === gov ? "chip-o gov" : "chip-o");
-        chip.append(img(officerImg(o.id), "chip-img"), h("span", undefined, `${o === gov ? "태수 " : ""}${o.name} ${o.men.toLocaleString("ko-KR")}`));
+        const chip = h("span", `chip-o${o === gov ? " gov" : ""}${o.acted ? " acted" : ""}`);
+        chip.title = o.acted ? "이번 달 행동 완료" : "";
+        chip.append(img(officerImg(o.id), "chip-img"), h("span", undefined, `${o === gov ? "태수 " : ""}${o.name} ${o.men.toLocaleString("ko-KR")}${o.acted ? " ✓" : ""}`));
         chips.append(chip);
       }
       this.infoEl.append(chips);
@@ -456,7 +458,7 @@ export class UI implements IO {
     const v = Number(raw);
     if (raw === "" && p.kind === "choose" && p.cancel) return this.finish(null);
     if (raw === "" || !Number.isInteger(v)) return this.flash();
-    if (p.kind === "choose" && p.options.some((o) => o.value === v)) return this.finish(v);
+    if (p.kind === "choose" && p.options.some((o) => o.value === v && !o.disabled)) return this.finish(v);
     if (p.kind === "number" && v >= p.min && v <= p.max) return this.finish(v);
     if ((p.kind === "region" || p.kind === "hex") && p.allowed.includes(v)) return this.finish(v);
     this.flash();
@@ -523,7 +525,7 @@ export class UI implements IO {
     let next = (this.fresh ? "" : this.inputEl.value.replace(/\D/g, "")) + key;
     this.fresh = false;
     if (p.kind === "choose" || p.kind === "region" || p.kind === "hex") {
-      const values = (p.kind === "choose" ? p.options.map((o) => o.value) : p.allowed).map(String);
+      const values = (p.kind === "choose" ? p.options.filter((o) => !o.disabled).map((o) => o.value) : p.allowed).map(String);
       // 어떤 번호와도 맞지 않으면 새로 친 숫자부터 다시 시작한다
       if (!values.some((x) => x.startsWith(next))) next = values.some((x) => x.startsWith(key)) ? key : "";
       this.inputEl.value = next;

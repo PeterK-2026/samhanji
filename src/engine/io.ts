@@ -3,6 +3,7 @@ export interface Option {
   value: number;
   label: string;
   officer?: string; // 장수 id: 초상화 썸네일을 함께 보여 준다
+  disabled?: boolean; // 보이되 고를 수 없다
 }
 
 // 원작 HEXDATA 지형 코드 0~6: 평지·초원·숲·산·물·구릉·성
