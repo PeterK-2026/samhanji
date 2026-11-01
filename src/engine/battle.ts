@@ -10,7 +10,7 @@ import {
 } from "./hex";
 import type { BattleFx, BattleView, IO, Option, SideView } from "./io";
 import { MAX_FOOD, MAX_GOLD } from "./economy";
-import { checkFactions, killOfficer } from "./politics";
+import { checkFactions, killOfficer, succeed } from "./politics";
 import {
   adjacent, battleAt, breakAlliance, capitalOf, chance, changeRelation, clamp, isAllied, officersIn, rand, regionOf,
 } from "./state";
@@ -1217,7 +1217,7 @@ async function handleCaptives(
     let choice: number;
     if (decide) {
       io.showOfficer(c.id, `포로: ${c.name}${isRuler ? " — 적국의 군주!" : ""}`, [`지력 ${c.int} · 무력 ${c.war} · 매력 ${c.chr} · 충성 ${c.loy}`]);
-      const opts = [{ value: 2, label: "석방" }, { value: 3, label: "처형" }];
+      const opts = [{ value: 2, label: "석방" }, { value: 3, label: isRuler ? "폐위" : "유배" }];
       if (!isRuler) opts.unshift({ value: 1, label: "등용" });
       choice = (await io.choose(`${c.name}을(를) 어떻게 하시겠습니까?`, opts)) ?? 2;
     } else {
@@ -1233,12 +1233,17 @@ async function handleCaptives(
         continue;
       }
       log(`${c.name}: "두 임금을 섬길 수는 없소!" 등용을 거부했다.`);
-      choice = decide ? ((await io.confirm(`${c.name}을(를) 처형하시겠습니까?`)) ? 3 : 2) : chance(0.3) ? 3 : 2;
+      choice = decide ? ((await io.confirm(`${c.name}을(를) 유배 보내시겠습니까?`)) ? 3 : 2) : chance(0.3) ? 3 : 2;
     }
     if (choice === 3) {
-      log(`${c.name}이(가) 처형되었다.`);
-      for (const t of killOfficer(s, c)) io.say(t);
-      if (c.faction && loser.faction) changeRelation(s, wf, loser.faction, -10);
+      // 유배: 세력에서 떼어 재야로 보낸다. 군주라면 나라는 후계에게 넘어간다
+      const home = c.faction;
+      if (home && loser.faction) changeRelation(s, wf, loser.faction, -10);
+      c.faction = null;
+      c.hidden = false;
+      c.region = where;
+      log(`${c.name}을(를) ${isRuler ? "폐위해 " : ""}먼 곳으로 유배 보냈다.`);
+      if (isRuler && home) for (const t of succeed(s, home, c, true)) io.say(t);
     } else {
       const home = c.faction && s.factions[c.faction].alive ? capitalOf(s, c.faction) : null;
       if (home) {

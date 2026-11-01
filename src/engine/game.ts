@@ -71,7 +71,7 @@ export class Game {
       this.io.clear();
       if (s.factions[v].player) {
         this.io.say(`🎉 ${s.factions[v].name}이(가) 삼한을 하나로 통일했습니다! (${s.year}년)`);
-        this.io.say("천하가 그대의 이름을 기억할 것입니다.");
+        this.io.say("이것은 게임 속 결과입니다. 실제 역사와 무엇이 다른지 비교해 보십시오.");
       } else {
         this.io.say(`${s.factions[v].name}이(가) 삼한을 통일했습니다. 그대의 꿈은 여기서 끝났습니다.`);
       }

@@ -111,4 +111,13 @@ const BASE_OFFICER_DEFS: OfficerDef[] = [
 // 『삼국사기』·『삼국유사』 인물과 가상 인물 (officers-extra.ts)
 export const OFFICER_DEFS: OfficerDef[] = [...BASE_OFFICER_DEFS, ...EXTRA_OFFICER_DEFS];
 
+// 사망 연도가 수명이 아니라 사건(전사·처형 등)의 기록인 인물. 게임에서 그 사건이 일어나지 않을 수 있으므로
+// 그해에 자연사시키지 않고 60세까지는 살려 둔다 [설계]
+const EVENT_DEATHS = new Set([
+  "gwanchang", "bidam", "yeomjong", "pumseok", "jukjuk", "bangul", "seongchung", "gyebaek", "boksin", "dochim", "geommojam",
+  "panghyotae", "seolgyedu", "jinju", "heumun", "biryeongja", "geojin", "hapjeol", "pilbu", "sona", "chwido", "bugwa",
+  "pipsil", "yeongyun", "heumdol", "jangchun", "parang", "jiangxingben",
+]);
+export const lifespanEnd = (o: { id: string; born: number; died: number }) => (EVENT_DEATHS.has(o.id) ? Math.max(o.died, o.born + 60) : o.died);
+
 export const OFFICER_BY_ID = new Map(OFFICER_DEFS.map((d) => [d.id, d]));

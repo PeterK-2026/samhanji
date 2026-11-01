@@ -1,3 +1,4 @@
+import { lifespanEnd } from "../data/officers";
 import { regionDef } from "../data/regions";
 import { checkFactions, killOfficer } from "./politics";
 import {
@@ -45,14 +46,15 @@ export function monthStart(s: GameState): News[] {
     // 세율에 따른 민심 변화
     r.loyalty = clamp(r.loyalty + Math.round((45 - r.rate) / 10), 0, 100);
 
-    // 부흥운동 [설계]: 당이 다스리는 한반도 지역은 민심이 계속 떨어지고, 낮으면 부흥군이 일어난다
-    // (백제·고구려 부흥운동). 이것이 없으면 중원의 물량을 가진 당이 거의 모든 판을 통일한다.
+    // 원정 통치의 부담 [설계]: 본국에서 먼 한반도를 당이 직접 다스리면 민심이 계속 떨어지고, 낮으면 부흥군이 일어난다.
+    // 백제·고구려 부흥운동을 단순화한 규칙이며 민족에 따라 주민의 반응이 정해진다는 뜻이 아니다. 시작 안내에서 밝힌다.
+    // 이것이 없으면 중원의 물량을 가진 당이 거의 모든 판을 통일한다.
     if (owner === "tang" && regionDef(r.id).korea) {
       r.loyalty = clamp(r.loyalty - 2, 0, 100);
       if (r.loyalty < 30 && chance(0.06)) {
         for (const o of officersIn(s, r.id)) o.men = Math.floor(o.men * 0.85);
         r.food = Math.floor(r.food * 0.8);
-        news.push({ text: `${r.name}에서 부흥군이 일어나 당군을 공격했다!`, to: owner });
+        news.push({ text: `${r.name}에서 당의 통치에 맞서 부흥군이 일어났다!`, to: owner });
       }
     }
 
@@ -112,7 +114,7 @@ export function monthStart(s: GameState): News[] {
   // 인물의 죽음
   for (const o of Object.values(s.officers)) {
     if (!o.alive) continue;
-    const limit = s.mode === "history" ? o.died : o.died + 5;
+    const limit = lifespanEnd(o) + (s.mode === "history" ? 0 : 5);
     // 사망 연도에는 하반기(7월~)부터 자연사할 수 있다. 시나리오 초반에 갑자기 죽지 않도록 한다.
     if (s.year >= limit && chance(s.year > limit ? 0.35 : s.month >= 7 ? 0.15 : 0)) {
       const ruler = o.faction && s.factions[o.faction].ruler === o.id;

@@ -14,7 +14,7 @@ export function killOfficer(s: GameState, o: Officer): string[] {
   return msgs;
 }
 
-export function succeed(s: GameState, f: FactionId, old: Officer): string[] {
+export function succeed(s: GameState, f: FactionId, old: Officer, deposed = false): string[] {
   const fac = s.factions[f];
   const members = factionOfficers(s, f).filter((x) => x.id !== old.id);
   let heir = HEIRS[f].map((id) => s.officers[id]).find((x) => x && x.alive && x.faction === f);
@@ -30,11 +30,10 @@ export function succeed(s: GameState, f: FactionId, old: Officer): string[] {
   heir.hidden = false;
   fac.ruler = heir.id;
   heir.loy = 100;
-  const msgs = [crowned
-    ? `${fac.name}의 ${old.name}이(가) 세상을 떠났다. 뒤를 이을 사람이 없어 재야의 ${heir.name}이(가) 추대되었다.`
-    : `${fac.name}의 ${old.name}이(가) 세상을 떠났다. ${heir.name}이(가) 뒤를 이었다.`];
+  const gone = `${fac.name}의 ${old.name}이(가) ${deposed ? "물러났다" : "세상을 떠났다"}.`;
+  const msgs = [crowned ? `${gone} 뒤를 이을 사람이 없어 재야의 ${heir.name}이(가) 추대되었다.` : `${gone} ${heir.name}이(가) 뒤를 이었다.`];
   const gaesomun = s.officers["gaesomun"];
-  if (f === "goguryeo" && old.id === "yeongnyu" && heir.id === "bojang" && gaesomun?.alive && gaesomun.faction === f) {
+  if (!deposed && f === "goguryeo" && old.id === "yeongnyu" && heir.id === "bojang" && gaesomun?.alive && gaesomun.faction === f) {
     msgs[0] = "연개소문이 정변을 일으켜 영류왕을 시해하고 보장왕을 옹립했다! 연개소문은 대막리지가 되어 실권을 쥐었다.";
   }
   // 군주 교체 시 충성이 낮은 장수는 동요한다

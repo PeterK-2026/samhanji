@@ -110,7 +110,7 @@ export const SCENARIOS: ScenarioDef[] = [
       30: ["wangwendu", "sudingfang"],
     },
     absent: ["pumseok", "jukjuk", "yeongnyu", "weizheng"],
-    alliances: [["silla", "tang"]],
+    alliances: [], // 나당동맹은 648년. 이때는 가까운 사이일 뿐이다
     relations: [
       ["goguryeo", "baekje", 70], ["silla", "tang", 80], ["silla", "baekje", 5],
       ["silla", "goguryeo", 15], ["tang", "goguryeo", 5], ["tang", "baekje", 30],

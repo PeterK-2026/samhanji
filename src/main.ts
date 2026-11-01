@@ -59,13 +59,17 @@ async function setup(): Promise<GameState | null> {
   const diff = ((await ui.choose("난이도", [{ value: 1, label: "초급" }, { value: 2, label: "중급" }, { value: 3, label: "상급" }])) ?? 2) as 1 | 2 | 3;
   const watch = await ui.confirm("다른 세력끼리의 전투도 보시겠습니까?");
   const mode: Mode = (await ui.choose("게임 모드", [
-    { value: 1, label: "역사 모드 (실제 생몰년)" }, { value: 2, label: "가상 모드 (수명 연장)" },
+    { value: 1, label: "역사 모드 (기록·추정 생몰년, 가상 인물 일부 포함)" }, { value: 2, label: "가상 모드 (수명 5년 연장)" },
   ], { columns: 1 })) === 2 ? "fiction" : "history";
 
   ui.clear();
   ui.say(`시나리오: ${sc.title} (${sc.year}년)`);
   ui.say(`플레이어: ${players.map((f) => preview.factions[f].name).join(", ") || "없음 (관전)"}`);
   ui.say(`난이도: ${["초급", "중급", "상급"][diff - 1]} · ${mode === "history" ? "역사" : "가상"} 모드 · 다른 전투 ${watch ? "보기" : "안 보기"}`);
+  ui.say("알아 두기: 이 게임은 역사를 단순화한 모형입니다.");
+  ui.say("· 승리 조건은 만주까지 포함한 전 지역 차지입니다. 실제 신라의 통일은 대동강 남쪽까지였습니다.");
+  ui.say("· 능력치·병력·민심 수치는 게임 설정입니다. 인물 설명의 [가상]은 만들어 낸 인물입니다.");
+  ui.say("· 당이 점령한 한반도의 민심 하락은 먼 곳을 다스리는 어려움과 부흥운동을 줄인 규칙입니다.");
   if (!(await ui.confirm("이대로 시작합니까?"))) return null;
   return createGame(scId, players, mode, diff, watch || players.length === 0);
 }
