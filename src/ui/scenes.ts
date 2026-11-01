@@ -3,7 +3,7 @@
 // 움직임은 style.css의 .v-* (등장 한 번 + 느린 반복). prefers-reduced-motion이면 멈춘다.
 import { regionDef, REGION_DEFS } from "../data/regions";
 import { FACTION_INFO } from "../data/scenarios";
-import type { BattleView } from "../engine/io";
+import type { BattleView, MissionView } from "../engine/io";
 import { adjacent, connectedOwn, freeOfficersIn, governorOf, knowsRegion, menCap, menIn, officersIn, regionOf, relation, visibleMen } from "../engine/state";
 import { FACTION_IDS, type FactionId, type GameState, type Officer } from "../engine/types";
 import { battlefieldImg, officerImg, regionImg, strategicMapImg } from "./assets";
@@ -13,6 +13,7 @@ export interface SceneCtx {
   s: GameState | null;
   rid?: number; // 지금 보고 있는 지역
   battle?: BattleView | null;
+  mission?: MissionView;
 }
 
 const NS = "http://www.w3.org/2000/svg";
@@ -447,6 +448,14 @@ const SCENES: Record<string, Builder> = {
 };
 for (let i = 0; i <= 19; i++) SCENES[`cmd${i}`] = cmdScene(i);
 for (const k of ["spring", "summer", "autumn", "winter"]) SCENES[k] = SCENES.season;
+
+// 역사 임무: 안시성 그림과 지금 수치
+SCENES.mission = (id, c) => {
+  const m = c.mission;
+  if (!m) return [];
+  return [cutout(id, photo(regionImg(4))), ...headline(m.date, m.title, "安市城", m.body),
+    stats(m.stats.map((x) => [x.label, String(x.v)]))];
+};
 
 export const SCENE_KINDS = Object.keys(SCENES);
 

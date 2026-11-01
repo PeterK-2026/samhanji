@@ -80,6 +80,14 @@ export type GameEvent =
   | { kind: "battleEnd"; atkWon: boolean; months: number } // 승부가 난 전투
   | { kind: "capture"; region: number; from: FactionId | null; to: FactionId }; // 지역 점령
 
+// 역사 임무의 해설 카드
+export interface MissionView {
+  date: string;
+  title: string;
+  body: string;
+  stats: { label: string; v: number }[];
+}
+
 export interface IO {
   say(text: string): void;
   clear(): void;
@@ -99,6 +107,8 @@ export interface IO {
   scene?(kind: string): void;
   // 전투 연출. 끝날 때까지 기다린다. 화면이 없으면 구현하지 않아도 된다
   battleFx?(fx: BattleFx): Promise<void>;
+  // 역사 임무의 해설 카드. 화면이 없으면 구현하지 않아도 된다
+  missionCard?(v: MissionView | null): void; // null이면 임무를 마친다
   // 사건 기록. 평가 도구만 구현한다
   event?(e: GameEvent): void;
 }

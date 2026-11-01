@@ -96,6 +96,7 @@ body {
   background: var(--panel); border: 3px double var(--line); border-radius: 4px; padding: 10px 12px;
 }
 .info { flex: none; }
+.info[hidden] { display: none; }
 .hint { margin: 0; color: var(--ink-soft); }
 .info-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .seal {

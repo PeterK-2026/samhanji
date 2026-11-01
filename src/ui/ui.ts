@@ -1,6 +1,6 @@
 import { regionDef } from "../data/regions";
 import { FACTION_INFO } from "../data/scenarios";
-import type { BattleFx, BattleView, IO, Option } from "../engine/io";
+import type { BattleFx, BattleView, IO, Option, MissionView } from "../engine/io";
 import { freeOfficersIn, governorOf, knowsRegion, officersIn, seasonName, visibleMen } from "../engine/state";
 import type { FactionId, GameState } from "../engine/types";
 import { officerImg, regionImg } from "./assets";
@@ -219,6 +219,13 @@ export class UI implements IO {
     if (key === this.sceneKind && !battle) return;
     this.sceneKind = key;
     this.stageEl.replaceChildren(buildScene(kind, { s: this.state, rid: this.focus, battle }));
+  }
+
+  // 임무 중에는 지역 정보 대신 기록창을 넓혀 사료 문장을 읽게 한다
+  missionCard(v: MissionView | null) {
+    this.sceneKind = "";
+    this.infoEl.hidden = !!v;
+    if (v) this.stageEl.replaceChildren(buildScene("mission", { s: this.state, rid: 4, mission: v }));
   }
 
   showBattle(view: BattleView | null) {

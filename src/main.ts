@@ -1,6 +1,7 @@
 import { SCENARIOS } from "./data/scenarios";
 import { DEBUG, DebugPanel } from "./dev/debug";
 import { Game, type RunResult } from "./engine/game";
+import { runMission } from "./engine/mission";
 import { createGame } from "./engine/state";
 import { FACTION_IDS, type FactionId, type GameState, type Mode } from "./engine/types";
 import { listSaves, loadGame } from "./save";
@@ -18,8 +19,14 @@ async function setup(): Promise<GameState | null> {
   ui.say("삼한지 三韓志 — 고구려·백제·신라, 그리고 당");
   ui.say("7세기, 한반도의 패권을 두고 네 나라가 맞선다.");
   const start = await ui.choose("무엇을 하시겠습니까?", [
-    { value: 1, label: "새로 시작" }, { value: 2, label: "불러오기" },
-  ], { columns: 2 });
+    { value: 1, label: "새로 시작" }, { value: 2, label: "불러오기" }, { value: 3, label: "역사 임무: 안시성 (약 15분)" },
+  ], { columns: 3 });
+  if (start === 3) {
+    ui.setState(createGame(2, [], "history", 2, false), true);
+    ui.refresh(4);
+    await runMission(ui);
+    return null;
+  }
   if (start === 2) {
     const slot = await ui.choose("어느 칸을 불러옵니까?",
       listSaves().map((x) => ({ value: x.slot, label: `${x.slot}. ${x.label}` })), { cancel: true, columns: 1 });

@@ -1,3 +1,4 @@
+import { EVIDENCE } from "../data/mission-ansi";
 import { OFFICER_BY_ID } from "../data/officers";
 import { regionDef } from "../data/regions";
 import { MAX_UNITS, sendReinforcement, war } from "./battle";
@@ -31,10 +32,12 @@ export function officerLine(s: GameState, o: Officer): string {
 }
 
 export function showOfficerCard(c: Ctx, o: Officer) {
+  const proof = EVIDENCE[o.id]?.rows ?? [];
   c.io.showOfficer(o.id, o.name, [
     `지력 ${o.int} · 무력 ${o.war} · 매력 ${o.chr} · 충성 ${o.loy}`,
     `병사 ${o.men.toLocaleString("ko-KR")} · 훈련 ${o.trn} · 무장 ${o.arm} · 나이 ${age(c.s, o)}`,
     OFFICER_BY_ID.get(o.id)?.note ?? "",
+    ...proof,
   ]);
 }
 
